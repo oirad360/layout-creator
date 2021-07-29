@@ -4,13 +4,14 @@ function onResponse(response){
 
 function onJson(json){
     console.log(json)
+    const div=document.querySelector('#layouts')
     for(item of json){
         const link=document.createElement('a');
-        link.href=app_url+"/vetrina/"+item.username
-        link.innerText=item.username+" "
-        document.body.appendChild(link)
+        link.href=app_url+"/layout/"+item.id
+        link.innerText=item.id+" "
+        div.appendChild(link)
     }
 }
 
 
-fetch(app_url+"/home/fetchUtenti").then(onResponse).then(onJson)
+fetch(app_url+"/home/fetchLayouts").then(onResponse).then(onJson)
