@@ -4,9 +4,11 @@
         <link rel='stylesheet' href='/{{$app_folder}}/public/styles/newLayout.css'>
         <script src='/{{$app_folder}}/public/scripts/env.js' defer></script>
         <script src='/{{$app_folder}}/public/scripts/newLayout.js' defer></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="csrf-token" content="{{$csrf_token}}">
     </head>
     <body>
-        <main>
+        <main data-gen=0 data-id=0>
             
         </main>
         <menu>
@@ -15,10 +17,9 @@
             <button id="level" class="hidden">Seleziona livello superiore</button>
             <button id="delete" class="hidden">Svuota sezione</button>
             <form name=layout>
-                <input type='hidden' name='_token' value='{{ $csrf_token }}'>
                 <div id="size" class="hidden">
-                    <label id=width >Modifica larghezza (%):<input name=width type="number"></label>
-                    <label id=height >Modifica altezza (%):<input name=height type="number"></label>
+                    <label id=width >Modifica larghezza (%):<input min=0 name=width type="number" step="any"></label>
+                    <label id=height >Modifica altezza (%):<input min=0 name=height type="number" step="any"></label>
                     <label id=top >Modifica margine sup (px):<input name=marginTop type="number"></label>
                     <label id=right >Modifica margine dx (px):<input name=marginRight type="number"></label>
                     <label id=bottom >Modifica margine inf (px):<input name=marginBottom type="number"></label>

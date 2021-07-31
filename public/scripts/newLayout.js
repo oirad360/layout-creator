@@ -10,11 +10,11 @@ function setSize(lastSelected){//è una funzione che chiamo ogni qualvolta vogli
                             //della larghezza, altezza e margini che mostreranno inizialmente le dimensioni attuali del div selezionato
     sizeCommands.classList.remove("hidden")
     lastSelectedWidth=lastSelected.style.width.substring(5,lastSelected.style.width.length)
-    lastSelectedWidth=parseInt(lastSelectedWidth.split("%")[0])
+    lastSelectedWidth=lastSelectedWidth.split("%")[0]
     form.width.value=lastSelectedWidth
 
     lastSelectedHeight=lastSelected.style.height.substring(5,lastSelected.style.height.length)
-    lastSelectedHeight=parseInt(lastSelectedHeight.split("%")[0])
+    lastSelectedHeight=lastSelectedHeight.split("%")[0]
     form.height.value=lastSelectedHeight
 
     lastSelectedMarginTop=parseInt(lastSelected.style.marginTop.split("%")[0])
@@ -32,6 +32,8 @@ function setSize(lastSelected){//è una funzione che chiamo ogni qualvolta vogli
 }
 function split(event){//è la funzione che mi permette di generare gli N figli dentro il div attualmente selezionato
     event.preventDefault()
+    gen++
+    lastSelected.style.display="flex"
     lastSelected.style.flexWrap="nowrap" //di default il div è un flex-wrap, direzione row
     lastSelected.style.flexDirection=form.flexDirection.value //siccome voglio che il div generi N figli disposti in un certo modo
                                                 //allora tolgo il wrap e setto la flex-direction desiderata
@@ -42,7 +44,10 @@ function split(event){//è la funzione che mi permette di generare gli N figli d
         child.classList.add("child")
         child.dataset.gen=gen
         child.dataset.id=i
+        child.dataset.parent_gen=lastSelected.dataset.gen
+        child.dataset.parent_id=lastSelected.dataset.id
         child.style.display="flex"
+        child.style.flexDirection="row"
         child.style.flexWrap="wrap"
         child.style.margin="1px"
         child.style.border="1px solid "+color
@@ -67,7 +72,11 @@ function split(event){//è la funzione che mi permette di generare gli N figli d
     lastSelected.style.borderStyle="dashed"
     setSize(lastSelected)
     level.classList.remove("hidden")
-    gen++
+    /*if(gen===2){
+        const child=document.querySelector('.child[data-gen=\'1\'][data-id=\'1\']')
+        console.log(child.style)
+    }*/
+    
 }
 
 function select(event){//è la funzione che mi permette di selezionare il div che clicco
@@ -101,18 +110,16 @@ function selectLevel(){//è la funzione che mi permette di selezionare il padre 
 }
 
 function sizeUpdate(){//aggiorna le dimensioni del div selezionato, impostandole al valore che metto in input nel form
-    marginTop=parseInt(lastSelected.style.marginTop.split("px")[0])
-    marginRight=parseInt(lastSelected.style.marginRight.split("px")[0])
-    marginBottom=parseInt(lastSelected.style.marginBottom.split("px")[0])
-    marginLeft=parseInt(lastSelected.style.marginLeft.split("px")[0])
     border=parseInt(lastSelected.style.borderWidth.split("px")[0])
-    lastSelected.style.width="calc("+form.width.value+"%)"
-    lastSelected.style.height="calc("+form.height.value+"%)"
-    console.log(lastSelected.style.width)
+    lastSelected.style.width="calc("+form.width.value+"% - "+(parseInt(form.marginRight.value)+parseInt(form.marginLeft.value)+2*border)+"px)"
+    lastSelected.style.height="calc("+form.height.value+"% - "+(parseInt(form.marginBottom.value)+parseInt(form.marginTop.value)+2*border)+"px)"
 }
 
 function marginUpdate(){
+    border=parseInt(lastSelected.style.borderWidth.split("px")[0])
     lastSelected.style.margin=form.marginTop.value+"px "+form.marginRight.value+"px "+form.marginBottom.value+"px "+form.marginLeft.value+"px "
+    lastSelected.style.width="calc("+form.width.value+"% - "+(parseInt(form.marginRight.value)+parseInt(form.marginLeft.value)+2*border)+"px)"
+    lastSelected.style.height="calc("+form.height.value+"% - "+(parseInt(form.marginBottom.value)+parseInt(form.marginTop.value)+2*border)+"px)"
 }
 
 function deleteChilds(){//rimuove tutti i figli di un div (comprendendo anche i figli dei figli)
@@ -133,16 +140,63 @@ function deleteChilds(){//rimuove tutti i figli di un div (comprendendo anche i 
     else lastSelected.style.borderStyle="solid"
 }
 
-function save(){
-    //spedisci i dati dei div in formato json
+function onResponse(response){
+    return response.text()
 }
 
-let gen=1; //sta per "generazione", tiene conto del numero di suddivisioni effettuate in totale
+function onText(text){
+    if(text==1){
+        window.location.replace('home')
+    }
+}
+
+function save(){
+    const main=document.querySelector('main')
+    const data={
+        "layout": {
+            "display": main.style.display,
+            "flexDirection": main.style.flexDirection,
+            "flexWrap": main.style.flexWrap,
+            "height": "600px",
+            "width": "1100px"
+        },
+        "childs": []
+    }
+    for(i=1;i<=gen;i++){
+        const childs=document.querySelectorAll(".child[data-gen=\'"+i+"\']")
+        for(child of childs){
+            data.childs.push({
+                "gen": child.dataset.gen,
+                "id": child.dataset.id,
+                "parent_gen": child.dataset.parent_gen,
+                "parent_id": child.dataset.parent_id,
+                "display": child.style.display,
+                "flexDirection": child.style.flexDirection,
+                "flexWrap": child.style.flexWrap,
+                "height": child.style.height,
+                "width": child.style.width,
+                "margin": child.style.margin
+            })
+        }
+    }
+    fetch(app_url+"/newLayout/saveLayout",{
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers:
+        {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name=\'csrf-token\']').content
+        }
+    }).then(onResponse).then(onText)
+}
+
+let gen=0; //sta per "generazione", tiene conto del numero di suddivisioni effettuate in totale
 //es: la prima volta che clicco "Dividi", i figli che otterrò avranno data-gen=1, la seconda volte avrò dei figli con data-gen=2 ecc...
 //facciamo finta che i figli con stesso data-gen siano "fratelli"
 //ogni figlio ha un data-id (un numero) univoco, che lo contraddistingue dagli altri "fratelli"
 //dunque grazie a questi 2 valori riesco a identificare univocamente un div
 let counter=0; //contatore di figli totali
+let firstSave=true;
 const main=document.querySelector('main')
 let lastSelected=main;
 let lastSelectedColor=lastSelected.style.borderColor

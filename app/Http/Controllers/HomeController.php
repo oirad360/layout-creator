@@ -6,17 +6,26 @@ class HomeController extends BaseController
 {
     public function home(){
         if(session('id')===null){
-            return redirect('login');
+            return view('home')
+            ->with('app_folder',env('APP_FOLDER'))
+            ->with('status',"login");
+        } else {
+            $username=User::find(session('id'))->username;
+            return view('home')
+            ->with('app_folder',env('APP_FOLDER'))
+            ->with('status',"logout")
+            ->with('username',$username);
         }
-        $user=User::find(session('id'));
-        return view('home')
-        ->with('app_folder',env('APP_FOLDER'))
-        ->with('username',$user->username)
-        ->with('csrf_token', csrf_token());
     }
 
     public function fetchLayouts(){
-        $layouts=User::find(session('id'))->layouts;
-        return $layouts;
+        $users=User::all();
+        foreach($users as $user){
+            $layouts=$user->layouts;
+            foreach($layouts as $layout){
+                $result[$user->username][]=$layout->id;
+            }
+        }
+        return $result;
     }
 }

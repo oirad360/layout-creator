@@ -9,6 +9,10 @@ class Layout extends Model
     public function user(){
         return $this->belongsTo("User");
     }
+
+    public function childs(){
+        return $this->hasMany("Child");
+    }
 }
 
 ?>

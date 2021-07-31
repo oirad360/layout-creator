@@ -44,7 +44,6 @@ class LoginController extends BaseController
             if(request('password')==$password){
                 Session::put('id', $user->id);
                 Session::put('username',$user->username);
-                Session::put('tipo',$user->impiegato);
                 return redirect('home');
             } else { //password non valida
                 return redirect('login')->withInput();
@@ -64,7 +63,6 @@ class LoginController extends BaseController
             if(request('password')==$password){
                 Session::put('id', $user->id);
                 Session::put('username',$user->username);
-                Session::put('tipo',$user->impiegato);
             } else { //password non valida
                 return 1;
             }
@@ -77,6 +75,6 @@ class LoginController extends BaseController
 
     public function logout(){
         Session::flush();
-        return redirect('login');
+        return redirect('home');
     }
 }

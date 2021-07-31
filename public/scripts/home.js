@@ -3,13 +3,21 @@ function onResponse(response){
 }
 
 function onJson(json){
-    console.log(json)
-    const div=document.querySelector('#layouts')
-    for(item of json){
-        const link=document.createElement('a');
-        link.href=app_url+"/layout/"+item.id
-        link.innerText=item.id+" "
-        div.appendChild(link)
+    const container=document.querySelector('#layouts')
+    const users = Object.keys(json)
+    for(user of users){
+        const div=document.createElement('div')
+        const text=document.createElement('span')
+        text.innerText="layouts di "+user+": "
+        div.appendChild(text)
+        for(layout of json[user]){
+            const link=document.createElement('a');
+            link.href=app_url+"/layout/"+user+"/"+layout
+            link.innerText=layout+" "
+            div.appendChild(link)
+        }
+        
+        container.appendChild(div)
     }
 }
 
