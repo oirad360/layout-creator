@@ -147,6 +147,8 @@ function onResponse(response){
 function onText(text){
     if(text==1){
         window.location.replace('home')
+    } else {
+        saveButton.innerText="Effettua il login per salvere"
     }
 }
 
@@ -209,7 +211,7 @@ const sizeCommands=document.querySelector('#size')
 const error1=document.querySelector('#error1')
 const error2=document.querySelector('#error2')
 const splitCommands=document.querySelector('#split')
-const saveButton=document.querySelector(" #save")
+const saveButton=document.querySelector("#save")
 form.addEventListener('submit',split)
 level.addEventListener('click',selectLevel)
 form.width.addEventListener('change',sizeUpdate)

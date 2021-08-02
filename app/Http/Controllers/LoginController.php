@@ -41,7 +41,7 @@ class LoginController extends BaseController
         $user = User::where('username', request('user'))->orWhere('email', request('user'))->first();
         if(isset($user)) { //verifichiamo che la password sia corretta
             $password= $user->password;
-            if(request('password')==$password){
+            if(password_verify(request('password'),$password)){
                 Session::put('id', $user->id);
                 Session::put('username',$user->username);
                 return redirect('home');
@@ -60,7 +60,7 @@ class LoginController extends BaseController
         $user = User::where('username', request('user'))->orWhere('email', request('user'))->first();
         if(isset($user)) { //verifichiamo che la password sia corretta
             $password= $user->password;
-            if(request('password')==$password){
+            if(password_verify(request('password'),$password)){
                 Session::put('id', $user->id);
                 Session::put('username',$user->username);
             } else { //password non valida

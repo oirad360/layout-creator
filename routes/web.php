@@ -14,13 +14,23 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/','HomeController@home');
+
 Route::get('login', 'LoginController@login');
 Route::post('login', 'LoginController@checkLogin');
 Route::post('login/check', 'LoginController@checkLoginJS');
+
+Route::get('signup', 'SignupController@signup');
+Route::post('signup', 'SignupController@checkSignup');
+Route::get('signup/checkEmail/{email}', 'SignupController@checkEmail');
+Route::get('signup/checkUsername/{username}', 'SignupController@checkUsername');
+
 Route::get('logout', 'LoginController@logout');
+
 Route::get('home','HomeController@home');
 Route::get('home/fetchLayouts','HomeController@fetchLayouts');
+
 Route::get('newLayout','NewLayoutController@newLayout');
 Route::post('newLayout/saveLayout','NewLayoutController@saveLayout');
+
 Route::get('layout/{username}/{layoutID}', 'LayoutController@layout');
 Route::get('layout/loadLayout/{username}/{layoutID}', 'LayoutController@loadLayout');
