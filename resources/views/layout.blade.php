@@ -5,10 +5,10 @@
         <script src='/{{$app_folder}}/public/scripts/env.js' defer></script>
         <script src='/{{$app_folder}}/public/scripts/layout.js' defer></script>
     </head>
-    <body data-username="{{$username}}" data-layout="{{$layoutID}}">
+    <body data-layout="{{$layoutID}}">
         Autore: {{$username}} <br>
         Layout: {{$layoutID}}
-        <main>
+        <main id=layoutContainer>
             
         </main>
     </body>

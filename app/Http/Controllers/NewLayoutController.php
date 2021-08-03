@@ -31,6 +31,8 @@ class NewLayoutController extends BaseController
                 $newChild->data_id=$child["id"];
                 $newChild->data_parent_gen=$child["parent_gen"];
                 $newChild->data_parent_id=$child["parent_id"];
+                $newChild->hasChilds=$child["hasChilds"];
+                if($child["hasChilds"]==0) $newChild->title=$child["title"];
                 $newChild->display=$child["display"];
                 $newChild->flexDirection=$child["flexDirection"];
                 $newChild->flexWrap=$child["flexWrap"];

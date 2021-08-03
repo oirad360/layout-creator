@@ -1,0 +1,28 @@
+
+body{
+    margin:0px;
+    height:100vh;
+    width:100vw;
+}
+main {
+    display: flex;
+    flex-direction: column;
+}
+.row{
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+  }
+.elem{
+    display: flex;
+    flex-wrap: wrap;
+    flex-shrink:0;
+    overflow-y:auto;
+}
+
+.product{
+    height: 220px;
+    width: 150px;
+    margin: 5px;
+    background-color: rgb(79, 79, 176);
+}

@@ -21,14 +21,11 @@ body{
     background: #555; 
 }
 
-main{
+#layoutContainer{
     height: 600px;
     width: 1100px;
-    border: 2px solid black;
     display: flex;
     flex-wrap:wrap;
-    flex-shrink: 0;
-    overflow: auto;
 }
 
 .product{
@@ -59,10 +56,6 @@ label input{
     width: 20%;
 }
 
-.child{
-    flex-shrink: 0;
-    overflow: auto;
-}
 
 .hidden{
     display: none;
