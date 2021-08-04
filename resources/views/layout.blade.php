@@ -5,10 +5,13 @@
         <script src='/{{$app_folder}}/public/scripts/env.js' defer></script>
         <script src='/{{$app_folder}}/public/scripts/layout.js' defer></script>
     </head>
-    <body data-layout="{{$layoutID}}">
+    <body>
         Autore: {{$username}} <br>
         Layout: {{$layoutID}}
-        <main id=layoutContainer>
+        @if(isset($modify))
+        <a href='/{{$app_folder}}/public/newLayout/{{$layoutID}}'>Modifica</a>
+        @endif
+        <main data-layout="{{$layoutID}}" id=layoutContainer>
             
         </main>
     </body>

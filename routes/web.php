@@ -29,8 +29,8 @@ Route::get('logout', 'LoginController@logout');
 Route::get('home','HomeController@home');
 Route::get('home/fetchLayouts','HomeController@fetchLayouts');
 
-Route::get('newLayout','NewLayoutController@newLayout');
-Route::post('newLayout/saveLayout','NewLayoutController@saveLayout');
+Route::get('newLayout/{layoutID}','NewLayoutController@newLayout');
+Route::post('saveLayout','NewLayoutController@saveLayout');
 
 Route::get('layout/loadLayout/{layoutID}', 'LayoutController@loadLayout');
-Route::get('layout/{username}/{layoutID}', 'LayoutController@layout');
+Route::get('layout/{layoutID}', 'LayoutController@layout');

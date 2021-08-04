@@ -10,7 +10,7 @@
         @if(isset($username))
         Benvenuto {{$username}} <br>
         @endif
-        <a href="/{{$app_folder}}/public/newLayout">Nuovo layout</a>
+        <a href="/{{$app_folder}}/public/newLayout/new">Nuovo layout</a>
         <div id="layouts">
         </div>
     </body>

@@ -8,7 +8,7 @@
         <meta name="csrf-token" content="{{$csrf_token}}">
     </head>
     <body>
-        <main id=layoutContainer>
+        <main @if(isset($layoutID)) data-layout={{$layoutID}} @endif id=layoutContainer>
             
         </main>
         <menu>
@@ -26,7 +26,8 @@
                     <label>Modifica margine sx (px):<input name=marginLeft type="number"></label>
                 </div>
                 <div id="split">
-                    <label>Titolo: <input name=title></label>
+                    <label class="titleSetting hidden">Titolo: <input name=title></label>
+                    <label class="titleSetting hidden">Font (px): <input name=fontSize type="number"></label>
                     <label>Numero di suddivisioni: <input name=numSplit type="number" min=2 value=2></label>
                     <label>Disponi in direzione
                         <select name=flexDirection>

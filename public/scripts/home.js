@@ -12,7 +12,7 @@ function onJson(json){
         div.appendChild(text)
         for(layout of json[user]){
             const link=document.createElement('a');
-            link.href=app_url+"/layout/"+user+"/"+layout
+            link.href=app_url+"/layout/"+layout
             link.innerText=layout+" "
             div.appendChild(link)
         }
