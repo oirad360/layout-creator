@@ -35,7 +35,6 @@ formLayout.marginLeft.value=lastSelectedMarginLeft
 function setChild(child,titleText,titleSize){//è una funzione che chiamo ogni qualvolta voglio inserire titolo e sezione in un div
     child.style.display="flex"
     child.style.flexDirection="column"
-    child.style.flexWrap="nowrap"
     const title=document.createElement('h2')
     title.style.margin="10px"
     title.style.fontSize=titleSize+"px"
@@ -54,15 +53,14 @@ function loadLayout(layoutID, modify){
     fetch(app_url+"/layout/loadLayout/"+layoutID).then(function (response){
         return response.json()
     }).then(function (json){
-        console.log(json)
-        const main=document.querySelector('#layoutContainer')
-        main.innerHTML=""
-        main.style.overflow="auto"
-        main.dataset.gen=0
-        main.dataset.id=0
+        const layoutContainer=document.querySelector('#layoutContainer')
+        layoutContainer.innerHTML=""
+        layoutContainer.style.overflow="auto"
+        layoutContainer.dataset.gen=0
+        layoutContainer.dataset.id=0
         for(property of Object.keys(json)){
             if(property!=="id" && property!=="user_id" && property!=="childs"){
-                main.style[property]=json[property]
+                layoutContainer.style[property]=json[property]
             }
         }
         for(child of json.childs){
@@ -95,7 +93,7 @@ function loadLayout(layoutID, modify){
         }
         if(modify===true){
             textCount.innerText=counter;
-            const childs=main.querySelectorAll('.child')
+            const childs=layoutContainer.querySelectorAll('.child')
             for(child of childs){
                 if(!child.classList.contains("hasChilds")) {
                     const click = new Event('click')

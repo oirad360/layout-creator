@@ -14,7 +14,6 @@ foreign key(user_id) references users(id) on update cascade,
 index ind_user_id(user_id),
 display varchar(255),
 flexDirection varchar(255),
-flexWrap varchar(255),
 height varchar(255),
 width varchar(255)
 )engine='InnoDB';
@@ -33,7 +32,6 @@ title varchar(255),
 fontSize varchar(255),
 display varchar(255),
 flexDirection varchar(255),
-flexWrap varchar(255),
 height varchar(255),
 width varchar(255),
 margin varchar(255)

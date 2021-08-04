@@ -32,7 +32,6 @@ class NewLayoutController extends BaseController
             $newLayout->user_id=session('id');
             $newLayout->display=$request["layout"]["display"];
             $newLayout->flexDirection=$request["layout"]["flexDirection"];
-            $newLayout->flexWrap=$request["layout"]["flexWrap"];
             $newLayout->height=$request["layout"]["height"];
             $newLayout->width=$request["layout"]["width"];
             $newLayout->save();
@@ -42,7 +41,6 @@ class NewLayoutController extends BaseController
             $layout=Layout::find($layout_id);
             $layout->display=$request["layout"]["display"];
             $layout->flexDirection=$request["layout"]["flexDirection"];
-            $layout->flexWrap=$request["layout"]["flexWrap"];
             $layout->height=$request["layout"]["height"];
             $layout->width=$request["layout"]["width"];
             $layout->save();
@@ -64,7 +62,6 @@ class NewLayoutController extends BaseController
             }
             $newChild->display=$child["display"];
             $newChild->flexDirection=$child["flexDirection"];
-            $newChild->flexWrap=$child["flexWrap"];
             $newChild->height=$child["height"];
             $newChild->width=$child["width"];
             $newChild->margin=$child["margin"];

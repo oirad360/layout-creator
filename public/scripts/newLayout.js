@@ -5,7 +5,7 @@ function split(event){//è la funzione che mi permette di generare gli N figli d
     lastSelected.classList.add("hasChilds")
     lastSelected.removeEventListener('click',select)
     lastSelected.style.display="flex"
-    lastSelected.style.flexWrap="nowrap" //di default il div è un flex-wrap, direzione row
+    //lastSelected.style.flexWrap="nowrap" //di default il div è un flex-wrap, direzione row
     lastSelected.style.flexDirection=formLayout.flexDirection.value //siccome voglio che il div generi N figli disposti in un certo modo
                                                 //allora tolgo il wrap e setto la flex-direction desiderata
     color=getRandomColor()
@@ -39,13 +39,8 @@ function split(event){//è la funzione che mi permette di generare gli N figli d
         titleSettings[1].classList.remove("hidden")
         textCount.innerText=counter;
     }
-    if(lastSelected!==layoutContainer) lastSelected.style.borderStyle="solid"
-    lastSelected=lastSelected.querySelector('.child[data-id=\'1\']')
-    lastSelected.style.borderStyle="dashed"
-    setSize(lastSelected)
-    formLayout.fontSize.value=lastSelected.childNodes[0].style.fontSize.split('px')[0]
-    level.classList.remove("hidden")
-
+    const click= new Event('click')
+    lastSelected.querySelector('.child[data-id=\'1\']').dispatchEvent(click)
 }
 
 function select(event){//è la funzione che mi permette di selezionare il div che clicco
@@ -70,8 +65,6 @@ function select(event){//è la funzione che mi permette di selezionare il div ch
 
 function selectLevel(){//è la funzione che mi permette di selezionare il padre del div attualmente selezionato
     deleteButton.classList.remove("hidden")
-    titleSettings[0].classList.add("hidden")
-    titleSettings[1].classList.add("hidden")
     lastSelected.style.borderStyle="solid"
     lastSelected=lastSelected.parentNode
     if(lastSelected!==layoutContainer) lastSelected.style.borderStyle="dashed"
@@ -91,7 +84,6 @@ function titleUpdate(){
 
 function fontUpdate(){
     lastSelected.childNodes[0].style.fontSize=formLayout.fontSize.value+"px"
-    console.log(lastSelected.childNodes[0].style)
     saveButton.classList.remove("hidden")
 }
 
@@ -152,7 +144,6 @@ function save(){
             "id": layoutContainer.dataset.layout,
             "display": layoutContainer.style.display,
             "flexDirection": layoutContainer.style.flexDirection,
-            "flexWrap": layoutContainer.style.flexWrap,
             "height": "600px",
             "width": "1100px"
         },
@@ -179,7 +170,6 @@ function save(){
                 "fontSize": fontSize,
                 "display": child.style.display,
                 "flexDirection": child.style.flexDirection,
-                "flexWrap": child.style.flexWrap,
                 "height": child.style.height,
                 "width": child.style.width,
                 "margin": child.style.margin
