@@ -3,6 +3,7 @@
     <head>
         <link rel='stylesheet' href='/{{$app_folder}}/public/styles/newLayout.css'>
         <script src='/{{$app_folder}}/public/scripts/env.js' defer></script>
+        <script src='/{{$app_folder}}/public/scripts/functions.js' defer></script>
         <script src='/{{$app_folder}}/public/scripts/newLayout.js' defer></script>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{$csrf_token}}">
