@@ -49,11 +49,10 @@ function setChild(child,titleText,titleSize){//è una funzione che chiamo ogni q
     child.appendChild(section)
 }
 
-function loadLayout(layoutID, modify){
+function loadLayout(layoutContainer, layoutID, modify){
     fetch(app_url+"/layout/loadLayout/"+layoutID).then(function (response){
         return response.json()
     }).then(function (json){
-        const layoutContainer=document.querySelector('#layoutContainer')
         layoutContainer.innerHTML=""
         layoutContainer.style.overflow="auto"
         layoutContainer.dataset.gen=0
@@ -80,11 +79,12 @@ function loadLayout(layoutID, modify){
             if(child.hasChilds==1) {
                 childNode.classList.add("hasChilds")
             }else {
-                setChild(childNode,child.title,child.fontSize)
+                setChild(childNode,child.title,child.fontSize.split('px')[0])
                 if(modify===true) childNode.addEventListener('click',select)
             }
-            
-            const parent=document.querySelector("[data-gen=\'"+child.data_parent_gen+"\'][data-id=\'"+child.data_parent_id+"\']")
+            let parent
+            if(child.data_parent_gen===0 && child.data_parent_id===0) parent=layoutContainer
+            else parent=layoutContainer.querySelector("[data-gen=\'"+child.data_parent_gen+"\'][data-id=\'"+child.data_parent_id+"\']")
             parent.appendChild(childNode)
             if(modify===true){
                 counter++

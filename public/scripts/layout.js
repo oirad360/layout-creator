@@ -1,4 +1,4 @@
-
+const layoutContainer=document.querySelector('#layoutContainer')
 const layoutID=document.querySelector('#layoutContainer').dataset.layout
-loadLayout(layoutID)
+loadLayout(layoutContainer, layoutID)
 

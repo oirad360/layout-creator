@@ -9,13 +9,13 @@
         <meta name="csrf-token" content="{{$csrf_token}}">
     </head>
     <body>
-        <main @if(isset($layoutID)) data-layout={{$layoutID}} @endif id=layoutContainer>
+        <main data-layout={{$layoutID}} id=layoutContainer>
             
         </main>
         <menu>
-            <button id="save" class="hidden">Salva</button>
-            <button id="level" class="hidden">Seleziona livello superiore</button>
-            <button id="delete" class="hidden">Svuota sezione</button>
+            <button id="saveButton" class="hidden">Salva</button>
+            <button id="levelButton" class="hidden">Seleziona livello superiore</button>
+            <button id="deleteButton" class="hidden">Svuota sezione</button>
             <form name=layout>
                 <div>Contatore: <span id=counter></span></div>
                 <div id="size" class="hidden">

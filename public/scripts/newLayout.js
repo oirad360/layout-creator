@@ -1,46 +1,44 @@
 function split(event){//è la funzione che mi permette di generare gli N figli dentro il div attualmente selezionato
     event.preventDefault()
     gen++
-    lastSelected.innerHTML=""
+    lastSelected.innerHTML="" //lastSelected è il div "padre" che è stato selezionato per essere suddiviso
     lastSelected.classList.add("hasChilds")
     lastSelected.removeEventListener('click',select)
     lastSelected.style.display="flex"
-    //lastSelected.style.flexWrap="nowrap" //di default il div è un flex-wrap, direzione row
-    lastSelected.style.flexDirection=formLayout.flexDirection.value //siccome voglio che il div generi N figli disposti in un certo modo
-                                                //allora tolgo il wrap e setto la flex-direction desiderata
-    color=getRandomColor()
+    lastSelected.style.flexDirection=formLayout.flexDirection.value
+    const color=getRandomColor()
     const N=formLayout.numSplit.value
-    for(i=1; i<=N;i++){//generazione degli N figli (saranno tutti dei flex-wrap, row)
+    for(i=1; i<=N;i++){//generazione degli N figli
         const child=document.createElement('div')
         child.classList.add("child")
-        child.dataset.gen=gen//
-        child.dataset.id=i//
-        child.dataset.parent_gen=lastSelected.dataset.gen//
-        child.dataset.parent_id=lastSelected.dataset.id//
-        child.style.margin="1px"//
+        child.dataset.gen=gen
+        child.dataset.id=i
+        child.dataset.parent_gen=lastSelected.dataset.gen
+        child.dataset.parent_id=lastSelected.dataset.id
+        child.style.margin="1px"
         child.style.border="1px solid "+color
         child.style.flexShrink="0"
         child.style.overflow="auto"
         const size1="calc("+100/N+"% - 4px)"//sottraggo dalla percentuale la quantità 2*(larghezzaMargine+larghezzaBordo)
         const size2="calc("+100+"% - 4px)"
         if(formLayout.flexDirection.value==="row"){
-            child.style.width=size1//
-            child.style.height=size2//
+            child.style.width=size1
+            child.style.height=size2
         } else {
             child.style.height=size1
             child.style.width=size2
         }
-        setChild(child,"Inserisci un titolo",24)
-        child.addEventListener('click',select)
-        lastSelected.appendChild(child)
+        setChild(child,"Inserisci un titolo",24)//imposto il titolo e la section nel figlio appena creato
+        child.addEventListener('click',select) //lo rendo selezionabile
+        lastSelected.appendChild(child) //lo inserisco nel padre
         counter++
         saveButton.classList.remove("hidden")
         titleSettings[0].classList.remove("hidden")
         titleSettings[1].classList.remove("hidden")
         textCount.innerText=counter;
     }
-    const click= new Event('click')
-    lastSelected.querySelector('.child[data-id=\'1\']').dispatchEvent(click)
+    const click= new Event('click') //adesso seleziono il primo figlio, come se, dopo aver generato tutti i figli, facessi click sul primo
+    lastSelected.querySelector('.child[data-id=\'1\']').dispatchEvent(click)//dunque dopo questa istruzione lastSelected diventerà il primo figlio che è stato generato dentro il padre (l'ex lastSelected, vedi il funzionamento di select())
 }
 
 function select(event){//è la funzione che mi permette di selezionare il div che clicco
@@ -48,7 +46,7 @@ function select(event){//è la funzione che mi permette di selezionare il div ch
     lastSelected=event.currentTarget
     lastSelected.style.borderStyle="dashed"
     setSize(lastSelected)
-    level.classList.remove("hidden")
+    levelButton.classList.remove("hidden")
     titleSettings[0].classList.remove("hidden")
     titleSettings[1].classList.remove("hidden")
     const childs=lastSelected.querySelectorAll('.child')
@@ -57,9 +55,9 @@ function select(event){//è la funzione che mi permette di selezionare il div ch
         deleteButton.classList.remove("hidden")
     } else {
         splitCommands.classList.remove("hidden")
+        deleteButton.classList.add("hidden")
         formLayout.title.value=lastSelected.childNodes[0].innerText
         formLayout.fontSize.value=lastSelected.childNodes[0].style.fontSize.split('px')[0]
-        deleteButton.classList.add("hidden")
     }
 }
 
@@ -67,34 +65,24 @@ function selectLevel(){//è la funzione che mi permette di selezionare il padre 
     deleteButton.classList.remove("hidden")
     lastSelected.style.borderStyle="solid"
     lastSelected=lastSelected.parentNode
-    if(lastSelected!==layoutContainer) lastSelected.style.borderStyle="dashed"
-    if(lastSelected===layoutContainer) {
-        level.classList.add("hidden")
-        sizeCommands.classList.add("hidden")
-    }else{
+    if(lastSelected!==layoutContainer) {
         setSize(lastSelected)
+        lastSelected.style.borderStyle="dashed"
+    }else{
+        levelButton.classList.add("hidden")
+        sizeCommands.classList.add("hidden")
     }
     splitCommands.classList.add("hidden")
 }
 
-function titleUpdate(){
-    lastSelected.childNodes[0].innerText=formLayout.title.value
-    saveButton.classList.remove("hidden")
-}
-
-function fontUpdate(){
-    lastSelected.childNodes[0].style.fontSize=formLayout.fontSize.value+"px"
-    saveButton.classList.remove("hidden")
-}
-
-function sizeUpdate(){//aggiorna le dimensioni del div selezionato, impostandole al valore che metto in input nel form
+function sizeUpdate(){//aggiorna le dimensioni del div selezionato, impostandole al valore che metto in input nel form, stessa cosa per marginUpdate,titleUpdate,fontUpdate
     border=parseInt(lastSelected.style.borderWidth.split("px")[0])
     lastSelected.style.width="calc("+formLayout.width.value+"% - "+(parseInt(formLayout.marginRight.value)+parseInt(formLayout.marginLeft.value)+2*border)+"px)"
     lastSelected.style.height="calc("+formLayout.height.value+"% - "+(parseInt(formLayout.marginBottom.value)+parseInt(formLayout.marginTop.value)+2*border)+"px)"
     saveButton.classList.remove("hidden")
 }
 
-function marginUpdate(){
+function marginUpdate(){//aggiorna le dimensioni dei margini del div selezionato
     border=parseInt(lastSelected.style.borderWidth.split("px")[0])
     lastSelected.style.margin=formLayout.marginTop.value+"px "+formLayout.marginRight.value+"px "+formLayout.marginBottom.value+"px "+formLayout.marginLeft.value+"px "
     lastSelected.style.width="calc("+formLayout.width.value+"% - "+(parseInt(formLayout.marginRight.value)+parseInt(formLayout.marginLeft.value)+2*border)+"px)"
@@ -102,7 +90,18 @@ function marginUpdate(){
     saveButton.classList.remove("hidden")
 }
 
-function deleteChilds(){//rimuove tutti i figli di un div (comprendendo anche i figli dei figli)
+
+function titleUpdate(){//aggiorna il titolo del div selezionato
+    lastSelected.childNodes[0].innerText=formLayout.title.value
+    saveButton.classList.remove("hidden")
+}
+
+function fontUpdate(){//aggiorna le dimensioni del font del titolo
+    lastSelected.childNodes[0].style.fontSize=formLayout.fontSize.value+"px"
+    saveButton.classList.remove("hidden")
+}
+
+function deleteChilds(){//rimuove tutti i figli del div selezionato (comprendendo anche i figli dei figli)
     childs=lastSelected.querySelectorAll(".child")
     for(child of childs){
         child.remove()
@@ -110,9 +109,8 @@ function deleteChilds(){//rimuove tutti i figli di un div (comprendendo anche i 
         textCount.innerText=counter;
     }
     lastSelected.classList.remove("hasChilds")
-    if(counter===0){
-        saveButton.classList.add("hidden")
-    }
+    if(counter===0)saveButton.classList.add("hidden")
+    else saveButton.classList.remove("hidden")
     deleteButton.classList.add("hidden")
     splitCommands.classList.remove("hidden")
     if(lastSelected!==layoutContainer){
@@ -122,7 +120,6 @@ function deleteChilds(){//rimuove tutti i figli di un div (comprendendo anche i 
         titleSettings[1].classList.remove("hidden")
         setSize(lastSelected)
     }
-    saveButton.classList.remove("hidden")
 }
 
 function onResponse(response){
@@ -130,11 +127,9 @@ function onResponse(response){
 }
 
 function onText(text){
-    if(text==1){
-        window.location.replace(app_url+"/home")
-    } else {
-        saveButton.innerText="Effettua il login per salvere"
-    }
+    console.log(text)
+    if(text==="1") window.location.replace(app_url+"/home") 
+    else saveButton.innerText="Effettua il login per salvere"
 }
 
 function save(){
@@ -150,7 +145,7 @@ function save(){
         "childs": []
     }
     for(i=1;i<=gen;i++){
-        const childs=document.querySelectorAll(".child[data-gen=\'"+i+"\']")
+        const childs=layoutContainer.querySelectorAll(".child[data-gen=\'"+i+"\']")
         let fontSize,title
         for(child of childs){
             if(child.classList.contains("hasChilds")){
@@ -187,6 +182,10 @@ function save(){
     }).then(onResponse).then(onText)
 }
 
+//-------------------------DEFINIZIONE DELLE VARIABILI GLOBALI------------------------------
+const sizeCommands=document.querySelector('#size')
+const splitCommands=document.querySelector('#split')
+const titleSettings=document.querySelectorAll('.titleSetting')
 
 let gen=0; /*sta per "generazione", tiene conto del numero di suddivisioni effettuate in totale
 es: la prima volta che clicco "Dividi", i figli che otterrò avranno data-gen=1, la seconda volte avrò dei figli con data-gen=2 ecc...
@@ -195,11 +194,11 @@ ogni figlio ha un data-id (un numero) univoco, che lo contraddistingue dagli alt
 dunque grazie a questi 2 valori riesco a identificare univocamente un div*/
 let counter=0 //contatore di figli totali
 let lastSelected
-const layoutContainer=document.querySelector('#layoutContainer')
 const textCount=document.querySelector('#counter')
-if(layoutContainer.dataset.layout!=="new"){
-    loadLayout(layoutContainer.dataset.layout,true)
-} else {
+const layoutContainer=document.querySelector('#layoutContainer')
+//----------------------------SETTAGGIO DEL LAYOUT CONTAINER--------------------------------
+if(layoutContainer.dataset.layout!=="new") loadLayout(layoutContainer,layoutContainer.dataset.layout,true) 
+else {
     layoutContainer.dataset.id=0
     layoutContainer.dataset.gen=0
     layoutContainer.style.flexShrink=0
@@ -207,15 +206,14 @@ if(layoutContainer.dataset.layout!=="new"){
     lastSelected=layoutContainer
     textCount.innerText=counter
 }
+//-------------------------------AGGIUNTA DEGLI EVENT LISTENER------------------------------
 const formLayout=document.forms['layout']
-const level=document.querySelector('#level')
-const deleteButton=document.querySelector('#delete')
-const sizeCommands=document.querySelector('#size')
-const splitCommands=document.querySelector('#split')
-const saveButton=document.querySelector("#save")
-const titleSettings=document.querySelectorAll('.titleSetting')
+const levelButton=document.querySelector('#levelButton')
+const deleteButton=document.querySelector('#deleteButton')
+const saveButton=document.querySelector("#saveButton")
+
 formLayout.addEventListener('submit',split)
-level.addEventListener('click',selectLevel)
+levelButton.addEventListener('click',selectLevel)
 formLayout.title.addEventListener('change', titleUpdate)
 formLayout.fontSize.addEventListener('change',fontUpdate)
 formLayout.width.addEventListener('change',sizeUpdate)
