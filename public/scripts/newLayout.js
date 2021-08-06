@@ -45,7 +45,7 @@ function select(event){//è la funzione che mi permette di selezionare il div ch
     if(lastSelected!==layoutContainer)lastSelected.style.borderStyle="solid"
     lastSelected=event.currentTarget
     lastSelected.style.borderStyle="dashed"
-    setSize(lastSelected)
+    setSize(lastSelected, formLayout)
     levelButton.classList.remove("hidden")
     titleSettings[0].classList.remove("hidden")
     titleSettings[1].classList.remove("hidden")
@@ -66,7 +66,7 @@ function selectLevel(){//è la funzione che mi permette di selezionare il padre 
     lastSelected.style.borderStyle="solid"
     lastSelected=lastSelected.parentNode
     if(lastSelected!==layoutContainer) {
-        setSize(lastSelected)
+        setSize(lastSelected, formLayout)
         lastSelected.style.borderStyle="dashed"
     }else{
         levelButton.classList.add("hidden")
@@ -89,7 +89,6 @@ function marginUpdate(){//aggiorna le dimensioni dei margini del div selezionato
     lastSelected.style.height="calc("+formLayout.height.value+"% - "+(parseInt(formLayout.marginBottom.value)+parseInt(formLayout.marginTop.value)+2*border)+"px)"
     saveButton.classList.remove("hidden")
 }
-
 
 function titleUpdate(){//aggiorna il titolo del div selezionato
     lastSelected.childNodes[0].innerText=formLayout.title.value
@@ -118,7 +117,7 @@ function deleteChilds(){//rimuove tutti i figli del div selezionato (comprendend
         setChild(lastSelected,"Inserisci un titolo",24)
         titleSettings[0].classList.remove("hidden")
         titleSettings[1].classList.remove("hidden")
-        setSize(lastSelected)
+        setSize(lastSelected, formLayout)
     }
 }
 

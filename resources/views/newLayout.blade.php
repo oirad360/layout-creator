@@ -28,7 +28,7 @@
                 </div>
                 <div id="split">
                     <label class="titleSetting hidden">Titolo: <input name=title></label>
-                    <label class="titleSetting hidden">Font (px): <input name=fontSize type="number"></label>
+                    <label class="titleSetting hidden">Font (px): <input name=fontSize min=0 type="number"></label>
                     <label>Numero di suddivisioni: <input name=numSplit type="number" min=2 value=2></label>
                     <label>Disponi in direzione
                         <select name=flexDirection>

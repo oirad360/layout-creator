@@ -7,9 +7,9 @@ function getRandomColor() {
     return color;
 }
 
-function setSize(lastSelected){//è una funzione che chiamo ogni qualvolta voglio mostrare i campi per l'inserimento
+function setSize(lastSelected, formLayout){//è una funzione che chiamo ogni qualvolta voglio mostrare i campi per l'inserimento
     //della larghezza, altezza e margini che mostreranno inizialmente le dimensioni attuali del div selezionato
-sizeCommands.classList.remove("hidden")
+formLayout.querySelector('#size').classList.remove("hidden")
 lastSelectedWidth=lastSelected.style.width.substring(5,lastSelected.style.width.length)
 lastSelectedWidth=lastSelectedWidth.split("%")[0]
 formLayout.width.value=lastSelectedWidth
