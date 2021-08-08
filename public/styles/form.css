@@ -14,13 +14,13 @@ form{
     display: flex;
     flex-direction: column;
 }
+
 label{
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin: 3px;
 }
-
 
 .error, #errorphp,#errorLogin{
     color: red;
