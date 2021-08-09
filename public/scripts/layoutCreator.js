@@ -1,7 +1,7 @@
 class LayoutCreator {
     constructor(height,width,layoutID,modify){
         this.gen=0
-        console.log(height+" "+width+" "+layoutID+" "+modify)
+
         this.layoutMenu=document.createElement('div')
         this.layoutMenu.id="layoutMenu"
 
