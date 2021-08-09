@@ -12,18 +12,25 @@
                 flex-direction: column;
                 align-items: flex-start;
             }
-            form{
+            #layoutMenu form{
                 display: flex;
                 flex-direction: column;
+                align-items:flex-start;
             }
-            label{
+            #layoutMenu label{
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
                 margin: 3px;
             }
-            label input{
+            #layoutMenu label input{
                 width: 20%;
+            }
+            #layoutMenu label.hidden{
+                display:none;
+            }
+            .hidden{
+                display: none;
             }
         </style>
         <meta name="viewport" content="width=device-width, initial-scale=1">
