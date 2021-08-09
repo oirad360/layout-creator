@@ -1,8 +1,7 @@
 class LayoutCreator {
-    gen
-    constructor(layoutContainer,layoutID,modify){
+    constructor(height,width,layoutID,modify){
         this.gen=0
-
+        console.log(height+" "+width+" "+layoutID+" "+modify)
         this.layoutMenu=document.createElement('div')
         this.layoutMenu.id="layoutMenu"
 
@@ -21,9 +20,21 @@ class LayoutCreator {
         this.saveButton.id="saveButton"
         this.saveButton.innerText="Salva"
 
+        this.addChildButton=document.createElement('button')
+        this.addChildButton.classList.add("hidden")
+        this.addChildButton.id="addChildButton"
+        this.addChildButton.innerText="Aggiungi sezione"
+
+        this.removeChildButton=document.createElement('button')
+        this.removeChildButton.classList.add("hidden")
+        this.removeChildButton.id="removeChildButton"
+        this.removeChildButton.innerText="Rimuovi sezione"
+
         this.layoutMenu.appendChild(this.saveButton)
         this.layoutMenu.appendChild(this.levelButton)
         this.layoutMenu.appendChild(this.deleteButton)
+        this.layoutMenu.appendChild(this.addChildButton)
+        this.layoutMenu.appendChild(this.removeChildButton)
 
         this.formLayout=document.createElement('form')
         this.formLayout.name="layout"
@@ -44,8 +55,7 @@ class LayoutCreator {
         this.splitCommands=document.createElement('div')
         this.splitCommands.id="splitCommands"
 
-        const labels=[]
-        const textLables=[
+        const labelsText=[
             "Modifica larghezza (%):",
             "Modifica altezza (%):",
             "Modifica margine sup (px):",
@@ -94,20 +104,20 @@ class LayoutCreator {
             }
         ]
         for(let i=0;i<10;i++){
-            labels.push(document.createElement('label'))
-            labels[i].innerText=textLables[i]
+            const labels=document.createElement('label')
+            labels.innerText=labelsText[i]
             if(i<9){
                 const input=document.createElement('input')
                 for(let key of Object.keys(inputsInfos[i])){
                     input[key]=inputsInfos[i][key]
                 }
-                labels[i].appendChild(input)
-                if(i<6) this.sizeCommands.appendChild(labels[i])
+                labels.appendChild(input)
+                if(i<6) this.sizeCommands.appendChild(labels)
                 else if(i===6 || i===7) {
-                    labels[i].classList.add("titleCommand","hidden")
-                    this.splitCommands.appendChild(labels[i])
+                    labels.classList.add("titleCommand","hidden")
+                    this.splitCommands.appendChild(labels)
                 } else {
-                    this.splitCommands.appendChild(labels[i])
+                    this.splitCommands.appendChild(labels)
                 }
             } else {
                 const select=document.createElement('select')
@@ -120,8 +130,8 @@ class LayoutCreator {
                 option2.value="column"
                 option2.innerText="verticale"
                 select.appendChild(option2)
-                labels[i].appendChild(select)
-                this.splitCommands.appendChild(labels[i])
+                labels.appendChild(select)
+                this.formLayout.appendChild(labels)
                 const input=document.createElement('input')
                 input.value="Dividi"
                 input.type="submit"
@@ -135,8 +145,11 @@ class LayoutCreator {
         this.titleCommands=this.splitCommands.querySelectorAll('.titleCommand')
         this.layoutMenu.appendChild(this.formLayout)
         
-        this.layoutContainer=layoutContainer
+        this.layoutContainer=document.createElement('div')
         this.layoutContainer.id='layoutContainer'
+        this.layoutContainer.dataset.layout="new"
+        this.layoutContainer.style.height=height
+        this.layoutContainer.style.width=width
         this.layoutContainer.dataset.id=0
         this.layoutContainer.dataset.gen=0
         this.layoutContainer.style.flexShrink=0
@@ -151,6 +164,12 @@ class LayoutCreator {
 
         this.selectLevelBinded=this.selectLevel.bind(this)
         this.levelButton.addEventListener('click',this.selectLevelBinded)
+
+        this.addChildBinded=this.addChild.bind(this)
+        this.addChildButton.addEventListener('click',this.addChildBinded)
+
+        this.removeChildBinded=this.removeChild.bind(this)
+        this.removeChildButton.addEventListener('click',this.removeChildBinded)
 
         this.titleUpdateBinded=this.titleUpdate.bind(this)
         this.formLayout.title.addEventListener('change', this.titleUpdateBinded)
@@ -168,6 +187,9 @@ class LayoutCreator {
         this.formLayout.marginBottom.addEventListener('change',this.marginUpdateBinded)
         this.formLayout.marginLeft.addEventListener('change',this.marginUpdateBinded)
 
+        this.flexDirectionUpdateBinded=this.flexDirectionUpdate.bind(this)
+        this.formLayout.flexDirection.addEventListener('change',this.flexDirectionUpdateBinded)
+
         this.deleteChildsBinded=this.deleteChilds.bind(this)
         this.deleteButton.addEventListener('click',this.deleteChildsBinded)
 
@@ -183,6 +205,8 @@ class LayoutCreator {
                         this.layoutContainer.style[property]=json[property]
                     }
                 }
+                this.layoutContainer.dataset.layout=layoutID
+                this.layoutContainer.classList.add("hasChilds")
                 let lastGen=json.childs[0].data_gen
                 let color=this.getRandomColor()
                 for(let child of json.childs){
@@ -207,6 +231,7 @@ class LayoutCreator {
                     }else {
                         this.setChild(childNode,child.title,child.fontSize.split('px')[0])
                         if(modify===true) childNode.addEventListener('click',this.selectBinded)
+                        else if(!child.title) childNode.querySelector('h2').remove()
                     }
                     let parent
                     if(child.data_parent_gen===0 && child.data_parent_id===0) parent=layoutContainer
@@ -222,7 +247,6 @@ class LayoutCreator {
                     for(let child of childs){
                         if(!child.classList.contains("hasChilds")) {
                             const click = new Event('click')
-                            this.lastSelected=child.parentNode
                             child.dispatchEvent(click)
                             break
                         }
@@ -243,6 +267,9 @@ class LayoutCreator {
     
     setSize(lastSelected, formLayout){//è una funzione che chiamo ogni qualvolta voglio mostrare i campi per l'inserimento
         //della larghezza, altezza e margini che mostreranno inizialmente le dimensioni attuali del div selezionato
+    let lastSelectedFlexDirection=lastSelected.style.flexDirection
+    formLayout.flexDirection.value=lastSelectedFlexDirection
+    
     formLayout.querySelector('#sizeCommands').classList.remove("hidden")
     let lastSelectedWidth=lastSelected.style.width.substring(5,lastSelected.style.width.length)
     lastSelectedWidth=lastSelectedWidth.split("%")[0]
@@ -284,8 +311,14 @@ class LayoutCreator {
     }
     
     select(event){//è la funzione che mi permette di selezionare il div che clicco
+        this.addChildButton.classList.add("hidden")
+        this.removeChildButton.classList.add("hidden")
         if(this.lastSelected!==this.layoutContainer)this.lastSelected.style.borderStyle="solid"
+        else this.lastSelected.style.borderStyle=""
         this.lastSelected=event.currentTarget
+        const gen=this.lastSelected.dataset.gen
+        if(document.querySelectorAll("[data-gen=\'"+gen+"\']").length>2) this.removeChildButton.classList.remove("hidden")
+        else this.removeChildButton.classList.add("hidden")
         this.lastSelected.style.borderStyle="dashed"
         this.setSize(this.lastSelected, this.formLayout)
         this.levelButton.classList.remove("hidden")
@@ -346,16 +379,22 @@ class LayoutCreator {
     }
     
     selectLevel(){//è la funzione che mi permette di selezionare il padre del div attualmente selezionato
+        this.addChildButton.classList.remove("hidden")
         this.deleteButton.classList.remove("hidden")
         this.lastSelected.style.borderStyle="solid"
         this.lastSelected=this.lastSelected.parentNode
+        const gen=this.lastSelected.dataset.gen
+        if(document.querySelectorAll("[data-gen=\'"+gen+"\']").length>2) this.removeChildButton.classList.remove("hidden")
+        else this.removeChildButton.classList.add("hidden")
         if(this.lastSelected!==this.layoutContainer) {
             this.setSize(this.lastSelected, this.formLayout)
-            this.lastSelected.style.borderStyle="dashed"
         }else{
+            const lastSelectedFlexDirection=this.lastSelected.style.flexDirection
+            this.formLayout.flexDirection.value=lastSelectedFlexDirection
             this.levelButton.classList.add("hidden")
             this.sizeCommands.classList.add("hidden")
         }
+        this.lastSelected.style.borderStyle="dashed"
         this.splitCommands.classList.add("hidden")
     }
     
@@ -384,8 +423,66 @@ class LayoutCreator {
         this.saveButton.classList.remove("hidden")
     }
     
+    flexDirectionUpdate(){
+        if(this.lastSelected.classList.contains('hasChilds') && this.formLayout.flexDirection.value!==this.lastSelected.style.flexDirection){
+            this.saveButton.classList.remove("hidden")
+            this.lastSelected.style.flexDirection=this.formLayout.flexDirection.value
+            const gen=this.lastSelected.childNodes[1].dataset.gen
+            const childs = this.lastSelected.querySelectorAll(".child")
+            for(const child of childs){
+                const height=child.style.height
+                child.style.height=child.style.width
+                child.style.width=height
+                if(child.classList.contains('hasChilds')){
+                    if(child.style.flexDirection==="row") child.style.flexDirection="column"
+                    else child.style.flexDirection="row"
+                }
+            }
+        }
+    }
+
+    addChild(){
+        const child=document.createElement('div')
+        child.classList.add("child")
+        child.dataset.gen=this.lastSelected.childNodes[1].dataset.gen
+        child.dataset.id=parseInt(this.lastSelected.childNodes[this.lastSelected.childNodes.length-1].dataset.id)+1
+        child.dataset.parent_gen=this.lastSelected.dataset.gen
+        child.dataset.parent_id=this.lastSelected.dataset.id
+        child.style.margin="1px"
+        child.style.border="1px solid "+this.lastSelected.childNodes[1].style.borderColor
+        child.style.flexShrink="0"
+        child.style.overflow="auto"
+        const N=this.lastSelected.childNodes.length+1
+        const size1="calc("+100/N+"% - 4px)"//sottraggo dalla percentuale la quantità 2*(larghezzaMargine+larghezzaBordo)
+        const size2="calc("+100+"% - 4px)"
+        if(this.lastSelected.style.flexDirection==="row"){
+            child.style.width=size1
+            child.style.height=size2
+        } else {
+            child.style.height=size1
+            child.style.width=size2
+        }
+        this.setChild(child,"Inserisci un titolo",24)//imposto il titolo e la section nel figlio appena creato
+        child.addEventListener('click',this.selectBinded) //lo rendo selezionabile
+        this.lastSelected.appendChild(child) //lo inserisco nel padre
+        this.counter.innerText++
+        this.saveButton.classList.remove("hidden")
+    }
+
+    removeChild(){
+        const parent=this.lastSelected.parentNode
+        const length=this.lastSelected.querySelectorAll('.child').length+1
+        this.lastSelected.remove()
+        this.counter.innerText-=length
+        const click=new Event('click')
+        parent.querySelector('.child').dispatchEvent(click)
+
+    }
+
     deleteChilds(){//rimuove tutti i figli del div selezionato (comprendendo anche i figli dei figli)
         const childs=this.lastSelected.querySelectorAll(".child")
+        this.addChildButton.classList.add("hidden")
+        this.removeChildButton.classList.add("hidden")
         for(let child of childs){
             child.remove()
             this.counter.innerText--
@@ -416,8 +513,8 @@ class LayoutCreator {
                 "id": this.layoutContainer.dataset.layout,
                 "display": this.layoutContainer.style.display,
                 "flexDirection": this.layoutContainer.style.flexDirection,
-                "height": "600px",
-                "width": "1100px"
+                "height": this.layoutContainer.style.height,
+                "width": this.layoutContainer.style.width
             },
             "childs": []
         }

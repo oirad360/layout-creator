@@ -5,7 +5,13 @@
         <script src='/{{$app_folder}}/public/scripts/env.js' defer></script>
         <script src='/{{$app_folder}}/public/scripts/layoutCreator.js' defer></script>
         <script src='/{{$app_folder}}/public/scripts/newLayout.js' defer></script>
+        <meta name=layout content={{$layoutID}}>
         <style>
+            #layoutMenu{
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+            }
             form{
                 display: flex;
                 flex-direction: column;
@@ -24,8 +30,5 @@
         <meta name="csrf-token" content="{{$csrf_token}}">
     </head>
     <body>
-        <main data-layout={{$layoutID}}>
-            
-        </main>
     </body>
 </html>

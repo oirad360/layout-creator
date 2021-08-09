@@ -5,6 +5,7 @@
         <script src='/{{$app_folder}}/public/scripts/env.js' defer></script>
         <script src='/{{$app_folder}}/public/scripts/layoutCreator.js' defer></script>
         <script src='/{{$app_folder}}/public/scripts/layout.js' defer></script>
+        <meta name=layout content={{$layoutID}}>
     </head>
     <body>
         Autore: {{$username}} <br>
@@ -12,8 +13,5 @@
         @if(isset($modify))
         <a href='/{{$app_folder}}/public/newLayout/{{$layoutID}}'>Modifica</a>
         @endif
-        <main data-layout="{{$layoutID}}">
-            
-        </main>
     </body>
 </html>

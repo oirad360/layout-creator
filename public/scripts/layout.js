@@ -1,4 +1,3 @@
-const layoutContainer=document.querySelector('main')
-const layoutID=document.querySelector('main').dataset.layout
-const layoutCreator=new LayoutCreator(layoutContainer,layoutID)
-document.body.appendChild(layoutCreator.layoutMenu)
+const layoutID=document.querySelector('meta[name=layout]').content
+const layoutCreator=new LayoutCreator(null,null,layoutID)
+document.body.appendChild(layoutCreator.layoutContainer)
