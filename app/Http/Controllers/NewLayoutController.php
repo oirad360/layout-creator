@@ -5,15 +5,10 @@ use Illuminate\Http\Request;
 
 class NewLayoutController extends BaseController
 {
-    public function newLayout($layoutID){
-        if($layoutID!=="new" && (session('id')===null || Layout::find($layoutID)->user->id!==session('id'))){
-            redirect('layout/'.$layoutID);
-        } else {
-            return view('newLayout')
-            ->with('layoutID',$layoutID)
-            ->with('app_folder',env('APP_FOLDER'))
-            ->with('csrf_token', csrf_token());
-        }
+    public function newLayout(){
+        return view('newLayout')
+        ->with('app_folder',env('APP_FOLDER'))
+        ->with('csrf_token', csrf_token());
     }
 
     public function saveLayout(Request $request){
@@ -53,6 +48,6 @@ class NewLayoutController extends BaseController
             $newChild->margin=$child["margin"];
             $newChild->save();
         }
-        return true;
+        return $layout->id;
     }
 }

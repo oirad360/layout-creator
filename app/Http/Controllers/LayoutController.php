@@ -11,13 +11,15 @@ class LayoutController extends BaseController
             return view('layout')
             ->with('app_folder',env('APP_FOLDER'))
             ->with('username',$username)
-            ->with('layoutID', $layoutID);
+            ->with('layoutID', $layoutID)
+            ->with('csrf_token', csrf_token());
         } else {
             return view('layout')
             ->with('app_folder',env('APP_FOLDER'))
             ->with('username',$username)
             ->with('layoutID', $layoutID)
-            ->with('modify', true);
+            ->with('modify', true)
+            ->with('csrf_token', csrf_token());
         }
     }
 

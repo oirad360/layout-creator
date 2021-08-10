@@ -527,7 +527,8 @@ class LayoutCreator {
                     fontSize=null
                 } else {
                     title=child.childNodes[0].innerText
-                    fontSize=child.childNodes[0].style.fontSize
+                    if(title) fontSize=child.childNodes[0].style.fontSize
+                    else fontSize=null
                 }
                 data.childs.push({
                     "gen": child.dataset.gen,
@@ -555,8 +556,9 @@ class LayoutCreator {
             }
         }).then(function(response){
             return response.text()
-        }).then((function(text){
-            if(text==="1") window.location.replace(app_url+"/home") 
+        }).then((function(layoutID){
+            if(layoutID) this.layoutContainer.dataset.layout=layoutID
+            //if(text==="1") window.location.replace(app_url+"/home") 
             else this.saveButton.innerText="Effettua il login per salvere"
         }).bind(this))
     }

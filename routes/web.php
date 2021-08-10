@@ -29,7 +29,7 @@ Route::get('logout', 'LoginController@logout');
 Route::get('home','HomeController@home');
 Route::get('home/fetchLayouts','HomeController@fetchLayouts');
 
-Route::get('newLayout/{layoutID}','NewLayoutController@newLayout');
+Route::get('newLayout','NewLayoutController@newLayout');
 Route::post('saveLayout','NewLayoutController@saveLayout');
 
 Route::get('layout/loadLayout/{layoutID}', 'LayoutController@loadLayout');

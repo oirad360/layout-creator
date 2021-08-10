@@ -5,7 +5,6 @@
         <script src='/{{$app_folder}}/public/scripts/env.js' defer></script>
         <script src='/{{$app_folder}}/public/scripts/layoutCreator.js' defer></script>
         <script src='/{{$app_folder}}/public/scripts/newLayout.js' defer></script>
-        <meta name=layout content={{$layoutID}}>
         <style>
             #layoutMenu{
                 display: flex;
