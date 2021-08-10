@@ -228,8 +228,9 @@ class LayoutCreator {
                     }
                     if(child.hasChilds==1) {
                         childNode.classList.add("hasChilds")
-                    }else {
-                        this.setChild(childNode,child.title,child.fontSize.split('px')[0])
+                    } else {
+                        if(child.title) this.setChild(childNode,child.title,child.fontSize.split('px')[0])
+                        else this.setChild(childNode,child.title,24)
                         if(modify===true) childNode.addEventListener('click',this.selectBinded)
                         else if(!child.title) childNode.querySelector('h2').remove()
                     }
@@ -423,7 +424,7 @@ class LayoutCreator {
         this.saveButton.classList.remove("hidden")
     }
     
-    flexDirectionUpdate(){
+    flexDirectionUpdate(){//cambia la flex-direction del div selezionato
         if(this.lastSelected.classList.contains('hasChilds') && this.formLayout.flexDirection.value!==this.lastSelected.style.flexDirection){
             this.saveButton.classList.remove("hidden")
             this.lastSelected.style.flexDirection=this.formLayout.flexDirection.value
@@ -441,7 +442,7 @@ class LayoutCreator {
         }
     }
 
-    addChild(){
+    addChild(){//aggiunge un div figlio dentro il div selezionato (che contiene almeno 2 figli)
         const child=document.createElement('div')
         child.classList.add("child")
         child.dataset.gen=this.lastSelected.childNodes[1].dataset.gen
@@ -469,7 +470,7 @@ class LayoutCreator {
         this.saveButton.classList.remove("hidden")
     }
 
-    removeChild(){
+    removeChild(){//rimuove un div figlio dal div selezionato (solo se contiene più di 2 figli)
         const parent=this.lastSelected.parentNode
         const length=this.lastSelected.querySelectorAll('.child').length+1
         this.lastSelected.remove()
@@ -507,7 +508,7 @@ class LayoutCreator {
         this.splitCommands.classList.remove("hidden")
     }
     
-    save(){
+    save(){//salva il layout
         const data={
             "layout": {
                 "id": this.layoutContainer.dataset.layout,
