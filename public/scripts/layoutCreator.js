@@ -103,6 +103,7 @@ class LayoutCreator {
                 "value":2
             }
         ]
+
         for(let i=0;i<10;i++){
             const labels=document.createElement('label')
             labels.innerText=labelsText[i]
@@ -130,6 +131,14 @@ class LayoutCreator {
                 option2.value="column"
                 option2.innerText="verticale"
                 select.appendChild(option2)
+                const option3=document.createElement('option')
+                option3.value="row-reverse"
+                option3.innerText="orizzontale inverso"
+                select.appendChild(option3)
+                const option4=document.createElement('option')
+                option4.value="column-reverse"
+                option4.innerText="verticale inverso"
+                select.appendChild(option4)
                 labels.appendChild(select)
                 this.formLayout.appendChild(labels)
                 const input=document.createElement('input')
@@ -257,6 +266,12 @@ class LayoutCreator {
         }
     }
     
+    showSaveButton(){
+        this.saveButton.classList.remove("hidden")
+        this.saveButton.innerText="Salva"
+        this.saveButton.addEventListener('click',this.saveBinded)
+    }
+
     getRandomColor() {
         const letters = '0123456789ABCDEF';
         let color = '#';
@@ -339,6 +354,7 @@ class LayoutCreator {
 
     split(event){//è la funzione che mi permette di generare gli N figli dentro il div attualmente selezionato
         event.preventDefault()
+        this.showSaveButton()
         this.gen++
         this.lastSelected.innerHTML="" //lastSelected è il div "padre" che è stato selezionato per essere suddiviso
         this.lastSelected.classList.add("hasChilds")
@@ -371,9 +387,6 @@ class LayoutCreator {
             child.addEventListener('click',this.selectBinded) //lo rendo selezionabile
             this.lastSelected.appendChild(child) //lo inserisco nel padre
             this.counter.innerText++
-            this.saveButton.classList.remove("hidden")
-            this.titleCommands[0].classList.remove("hidden")
-            this.titleCommands[1].classList.remove("hidden")
         }
         const click= new Event('click') //adesso seleziono il primo figlio, come se, dopo aver generato tutti i figli, facessi click sul primo
         this.lastSelected.querySelector('.child[data-id=\'1\']').dispatchEvent(click)//dunque dopo questa istruzione lastSelected diventerà il primo figlio che è stato generato dentro il padre (l'ex lastSelected, vedi il funzionamento di select())
@@ -400,49 +413,69 @@ class LayoutCreator {
     }
     
     sizeUpdate(){//aggiorna le dimensioni del div selezionato, impostandole al valore che metto in input nel form, stessa cosa per marginUpdate,titleUpdate,fontUpdate
+        this.showSaveButton()
         const border=parseInt(this.lastSelected.style.borderWidth.split("px")[0])
         this.lastSelected.style.width="calc("+this.formLayout.width.value+"% - "+(parseInt(this.formLayout.marginRight.value)+parseInt(this.formLayout.marginLeft.value)+2*border)+"px)"
         this.lastSelected.style.height="calc("+this.formLayout.height.value+"% - "+(parseInt(this.formLayout.marginBottom.value)+parseInt(this.formLayout.marginTop.value)+2*border)+"px)"
-        this.saveButton.classList.remove("hidden")
+        
     }
     
     marginUpdate(){//aggiorna le dimensioni dei margini del div selezionato
+        this.showSaveButton()
         const border=parseInt(this.lastSelected.style.borderWidth.split("px")[0])
         this.lastSelected.style.margin=this.formLayout.marginTop.value+"px "+this.formLayout.marginRight.value+"px "+this.formLayout.marginBottom.value+"px "+this.formLayout.marginLeft.value+"px "
         this.lastSelected.style.width="calc("+this.formLayout.width.value+"% - "+(parseInt(this.formLayout.marginRight.value)+parseInt(this.formLayout.marginLeft.value)+2*border)+"px)"
         this.lastSelected.style.height="calc("+this.formLayout.height.value+"% - "+(parseInt(this.formLayout.marginBottom.value)+parseInt(this.formLayout.marginTop.value)+2*border)+"px)"
-        this.saveButton.classList.remove("hidden")
+        
     }
     
     titleUpdate(){//aggiorna il titolo del div selezionato
+        this.showSaveButton()
         this.lastSelected.childNodes[0].innerText=this.formLayout.title.value
-        this.saveButton.classList.remove("hidden")
+        
     }
     
     fontUpdate(){//aggiorna le dimensioni del font del titolo
+        this.showSaveButton()
         this.lastSelected.childNodes[0].style.fontSize=this.formLayout.fontSize.value+"px"
-        this.saveButton.classList.remove("hidden")
+        
     }
     
     flexDirectionUpdate(){//cambia la flex-direction del div selezionato
         if(this.lastSelected.classList.contains('hasChilds') && this.formLayout.flexDirection.value!==this.lastSelected.style.flexDirection){
-            this.saveButton.classList.remove("hidden")
-            this.lastSelected.style.flexDirection=this.formLayout.flexDirection.value
-            const gen=this.lastSelected.childNodes[1].dataset.gen
-            const childs = this.lastSelected.querySelectorAll(".child")
-            for(const child of childs){
-                const height=child.style.height
-                child.style.height=child.style.width
-                child.style.width=height
-                if(child.classList.contains('hasChilds')){
-                    if(child.style.flexDirection==="row") child.style.flexDirection="column"
-                    else child.style.flexDirection="row"
+            this.showSaveButton()
+            if(this.formLayout.flexDirection.value.split("-")[0]!==this.lastSelected.style.flexDirection.split("-")[0]){
+                this.lastSelected.style.flexDirection=this.formLayout.flexDirection.value
+                const childs = this.lastSelected.querySelectorAll(".child")
+                for(const child of childs){
+                    const height=child.style.height
+                    child.style.height=child.style.width
+                    child.style.width=height
+                    if(child.parentNode.style.flexDirection.split("-")[0]==="row"){
+                        const marginRight=child.style.marginRight
+                        child.style.marginRight=child.style.marginBottom
+                        child.style.marginBottom=child.style.marginLeft
+                        child.style.marginLeft=child.style.marginTop
+                        child.style.marginTop=marginRight
+                    } else {
+                        const marginLeft=child.style.marginLeft
+                        child.style.marginRight=child.style.marginTop
+                        child.style.marginBottom=child.style.marginRight
+                        child.style.marginLeft=child.style.marginBottom
+                        child.style.marginTop=marginLeft
+                    }
+                    if(child.classList.contains('hasChilds')){
+                        if(child.style.flexDirection.split("-")[0]==="row") child.style.flexDirection="column"
+                        else child.style.flexDirection="row"
+                    }
                 }
             }
+            
         }
     }
 
     addChild(){//aggiunge un div figlio dentro il div selezionato (che contiene almeno 2 figli)
+        this.showSaveButton()
         const child=document.createElement('div')
         child.classList.add("child")
         child.dataset.gen=this.lastSelected.childNodes[1].dataset.gen
@@ -467,10 +500,11 @@ class LayoutCreator {
         child.addEventListener('click',this.selectBinded) //lo rendo selezionabile
         this.lastSelected.appendChild(child) //lo inserisco nel padre
         this.counter.innerText++
-        this.saveButton.classList.remove("hidden")
+        
     }
 
     removeChild(){//rimuove un div figlio dal div selezionato (solo se contiene più di 2 figli)
+        this.showSaveButton()
         const parent=this.lastSelected.parentNode
         const length=this.lastSelected.querySelectorAll('.child').length+1
         this.lastSelected.remove()
@@ -495,7 +529,8 @@ class LayoutCreator {
             this.titleCommands[1].classList.add("hidden")
         }
         else {
-            this.saveButton.classList.remove("hidden")
+            this.showSaveButton()
+            
             this.lastSelected.addEventListener('click',this.selectBinded)
             this.setChild(this.lastSelected,"Inserisci un titolo",24)
             this.formLayout.title.value="Inserisci un titolo"
@@ -509,6 +544,13 @@ class LayoutCreator {
     }
     
     save(){//salva il layout
+        this.saveButton.removeEventListener('click',this.saveBinded)
+        this.saveButton.innerText=""
+        const loading=document.createElement('img')
+        loading.height=17
+        loading.width=17
+        loading.src="../loading.gif"
+        this.saveButton.appendChild(loading)
         const data={
             "layout": {
                 "id": this.layoutContainer.dataset.layout,
@@ -547,6 +589,7 @@ class LayoutCreator {
                 })
             }
         }
+        
         fetch(app_url+"/saveLayout",{
             method: 'POST',
             body: JSON.stringify(data),
@@ -558,9 +601,15 @@ class LayoutCreator {
         }).then(function(response){
             return response.text()
         }).then((function(layoutID){
-            if(layoutID) this.layoutContainer.dataset.layout=layoutID
-            //if(text==="1") window.location.replace(app_url+"/home") 
-            else this.saveButton.innerText="Effettua il login per salvere"
+            if(layoutID) {
+                this.layoutContainer.dataset.layout=layoutID
+                this.saveButton.querySelector('img').remove()
+                this.saveButton.innerText="Salvataggio effettuato"
+            }
+            else {
+                this.saveButton.querySelector('img').remove()
+                this.saveButton.innerText="Effettua il login per salvere"
+            }
         }).bind(this))
     }
 }
