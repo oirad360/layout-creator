@@ -1,5 +1,5 @@
 class LayoutCreator {
-    constructor(height,width,layoutID,modify){
+    constructor(height,width){
         this.gen=0
 
         this.layoutMenu=document.createElement('div')
@@ -30,11 +30,16 @@ class LayoutCreator {
         this.removeChildButton.id="removeChildButton"
         this.removeChildButton.innerText="Rimuovi sezione"
 
+        this.quitButton=document.createElement('button')
+        this.quitButton.id="quitButton"
+        this.quitButton.innerText="Termina modifiche"
+
         this.layoutMenu.appendChild(this.saveButton)
         this.layoutMenu.appendChild(this.levelButton)
         this.layoutMenu.appendChild(this.deleteButton)
         this.layoutMenu.appendChild(this.addChildButton)
         this.layoutMenu.appendChild(this.removeChildButton)
+        this.layoutMenu.appendChild(this.quitButton)
 
         this.formLayout=document.createElement('form')
         this.formLayout.name="layout"
@@ -180,6 +185,9 @@ class LayoutCreator {
         this.removeChildBinded=this.removeChild.bind(this)
         this.removeChildButton.addEventListener('click',this.removeChildBinded)
 
+        this.quitBinded=this.quit.bind(this)
+        this.quitButton.addEventListener('click',this.quitBinded)
+
         this.titleUpdateBinded=this.titleUpdate.bind(this)
         this.formLayout.title.addEventListener('change', this.titleUpdateBinded)
 
@@ -204,67 +212,76 @@ class LayoutCreator {
 
         this.saveBinded=this.save.bind(this)
 
-        if(layoutID){
-            fetch(app_url+"/layout/loadLayout/"+layoutID).then(function (response){
-                return response.json()
-            }).then((function (json){
-                for(let property of Object.keys(json)){
-                    if(property!=="id" && property!=="user_id" && property!=="childs"){
-                        this.layoutContainer.style[property]=json[property]
-                    }
-                }
-                this.layoutContainer.dataset.layout=layoutID
-                this.layoutContainer.classList.add("hasChilds")
-                let lastGen=json.childs[0].data_gen
-                let color=this.getRandomColor()
-                for(let child of json.childs){
-                    const childNode=document.createElement('div')
-                    childNode.classList.add('child')
-                    childNode.style.overflow="auto"
-                    childNode.style.flexShrink="0";
-                    if(child.data_gen!==lastGen){
-                        color=this.getRandomColor()
-                    }
-                    childNode.style.border="1px solid "+color
-                    lastGen=child.data_gen
-                    childNode.dataset.gen=child.data_gen
-                    childNode.dataset.id=child.data_id
-                    childNode.dataset.parent_gen=child.data_parent_gen
-                    childNode.dataset.parent_id=child.data_parent_id
-                    for(let i=9;i<Object.keys(child).length;i++){
-                        childNode.style[Object.keys(child)[i]]=child[Object.keys(child)[i]]
-                    }
-                    if(child.hasChilds==1) {
-                        childNode.classList.add("hasChilds")
-                    } else {
-                        if(child.title) this.setChild(childNode,child.title,child.fontSize.split('px')[0])
-                        else this.setChild(childNode,child.title,24)
-                        if(modify===true) childNode.addEventListener('click',this.selectBinded)
-                        else if(!child.title) childNode.querySelector('h2').remove()
-                    }
-                    let parent
-                    if(child.data_parent_gen===0 && child.data_parent_id===0) parent=layoutContainer
-                    else parent=layoutContainer.querySelector("[data-gen=\'"+child.data_parent_gen+"\'][data-id=\'"+child.data_parent_id+"\']")
-                    parent.appendChild(childNode)
-                    if(modify===true){
-                        this.counter.innerText++
-                        this.gen=child.data_gen
-                    }
-                }
-                if(modify===true){
-                    const childs=layoutContainer.querySelectorAll('.child')
-                    for(let child of childs){
-                        if(!child.classList.contains("hasChilds")) {
-                            const click = new Event('click')
-                            child.dispatchEvent(click)
-                            break
-                        }
-                    }
-                }
-            }).bind(this))
-        }
     }
     
+    loadLayout(layoutID){
+        fetch(app_url+"/layout/loadLayout/"+layoutID).then(function (response){
+            return response.json()
+        }).then((function (json){
+            for(let property of Object.keys(json)){
+                if(property!=="id" && property!=="user_id" && property!=="childs"){
+                    this.layoutContainer.style[property]=json[property]
+                }
+            }
+            this.layoutContainer.dataset.layout=layoutID
+            this.layoutContainer.classList.add("hasChilds")
+            let lastGen=json.childs[0].data_gen
+            let color=this.getRandomColor()
+            for(let child of json.childs){
+                const childNode=document.createElement('div')
+                childNode.classList.add('child')
+                childNode.style.overflow="auto"
+                childNode.style.flexShrink="0";
+                if(child.data_gen!==lastGen){
+                    color=this.getRandomColor()
+                }
+                childNode.style.border="1px solid "+color
+                lastGen=child.data_gen
+                childNode.dataset.gen=child.data_gen
+                childNode.dataset.id=child.data_id
+                childNode.dataset.parent_gen=child.data_parent_gen
+                childNode.dataset.parent_id=child.data_parent_id
+                for(let i=9;i<Object.keys(child).length;i++){
+                    childNode.style[Object.keys(child)[i]]=child[Object.keys(child)[i]]
+                }
+                if(child.hasChilds==1) {
+                    childNode.classList.add("hasChilds")
+                } else {
+                    if(child.title) this.setChild(childNode,child.title,child.fontSize.split('px')[0])
+                    else {
+                        this.setChild(childNode,child.title,24)
+                        childNode.querySelector('.childTitle').remove()
+                    }
+                }
+                let parent
+                if(child.data_parent_gen===0 && child.data_parent_id===0) parent=layoutContainer
+                else parent=layoutContainer.querySelector("[data-gen=\'"+child.data_parent_gen+"\'][data-id=\'"+child.data_parent_id+"\']")
+                parent.appendChild(childNode)
+                this.counter.innerText++
+                this.gen=child.data_gen
+            }
+        }).bind(this))
+    }
+
+    modify(){
+        const childs=this.layoutContainer.querySelectorAll('.child')
+        let flag=false
+        for(const child of childs){
+            if(!child.classList.contains("hasChilds")) {
+                child.addEventListener('click',this.selectBinded)
+                if(!flag){
+                    const click = new Event('click')
+                    child.dispatchEvent(click)
+                    flag=true
+                }
+                if(!child.querySelector('.childTitle')){
+                    child.innerHTML=""
+                    this.setChild(child,"",24)
+                }
+            }
+        }
+    }
+
     showSaveButton(){
         this.saveButton.classList.remove("hidden")
         this.saveButton.innerText="Salva"
@@ -312,6 +329,7 @@ class LayoutCreator {
         child.style.display="flex"
         child.style.flexDirection="column"
         const title=document.createElement('h2')
+        title.classList.add('childTitle')
         title.style.margin="10px"
         title.style.fontSize=titleSize+"px"
         title.innerText=titleText
@@ -614,6 +632,19 @@ class LayoutCreator {
                 this.saveButton.innerText="Effettua il login per salvere"
             }
         }).bind(this))
+    }
+
+    quit(event){//termina le modifiche (senza salvare)
+        const layoutMenu=event.currentTarget.parentNode
+        layoutMenu.remove()
+        const childs=this.layoutContainer.querySelectorAll('.child')
+        for(const child of childs){
+            child.removeEventListener('click',this.selectBinded)
+            if(!child.classList.contains("hasChilds") && child.querySelector('.childTitle').innerText===""){
+                child.querySelector('.childTitle').remove()
+            }
+        }
+        this.lastSelected.style.borderStyle="solid"
     }
 }
 
