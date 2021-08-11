@@ -203,7 +203,6 @@ class LayoutCreator {
         this.deleteButton.addEventListener('click',this.deleteChildsBinded)
 
         this.saveBinded=this.save.bind(this)
-        this.saveButton.addEventListener('click',this.saveBinded)
 
         if(layoutID){
             fetch(app_url+"/layout/loadLayout/"+layoutID).then(function (response){
@@ -376,7 +375,7 @@ class LayoutCreator {
             child.style.overflow="auto"
             const size1="calc("+100/N+"% - 4px)"//sottraggo dalla percentuale la quantità 2*(larghezzaMargine+larghezzaBordo)
             const size2="calc("+100+"% - 4px)"
-            if(this.formLayout.flexDirection.value==="row"){
+            if(this.formLayout.flexDirection.value.split("-")[0]==="row"){
                 child.style.width=size1
                 child.style.height=size2
             } else {
@@ -441,7 +440,7 @@ class LayoutCreator {
         
     }
     
-    flexDirectionUpdate(){//cambia la flex-direction del div selezionato
+    flexDirectionUpdate(){//cambia la flex-direction del div selezionato e di conseguenza anche dei div figli che contengono altri figli
         if(this.lastSelected.classList.contains('hasChilds') && this.formLayout.flexDirection.value!==this.lastSelected.style.flexDirection){
             this.showSaveButton()
             if(this.formLayout.flexDirection.value.split("-")[0]!==this.lastSelected.style.flexDirection.split("-")[0]){
@@ -451,6 +450,12 @@ class LayoutCreator {
                     const height=child.style.height
                     child.style.height=child.style.width
                     child.style.width=height
+                    if(child.classList.contains('hasChilds')){
+                        if(child.style.flexDirection==="row") child.style.flexDirection="column"
+                        else if(child.style.flexDirection==="row-reverse") child.style.flexDirection="column-reverse"
+                        else if(child.style.flexDirection==="column") child.style.flexDirection="row"
+                        else if(child.style.flexDirection==="column-reverse") child.style.flexDirection="row-reverse"
+                    }
                     if(child.parentNode.style.flexDirection.split("-")[0]==="row"){
                         const marginRight=child.style.marginRight
                         child.style.marginRight=child.style.marginBottom
@@ -458,17 +463,15 @@ class LayoutCreator {
                         child.style.marginLeft=child.style.marginTop
                         child.style.marginTop=marginRight
                     } else {
-                        const marginLeft=child.style.marginLeft
-                        child.style.marginRight=child.style.marginTop
-                        child.style.marginBottom=child.style.marginRight
+                        const marginTop=child.style.marginTop
+                        child.style.marginTop=child.style.marginLeft
                         child.style.marginLeft=child.style.marginBottom
-                        child.style.marginTop=marginLeft
-                    }
-                    if(child.classList.contains('hasChilds')){
-                        if(child.style.flexDirection.split("-")[0]==="row") child.style.flexDirection="column"
-                        else child.style.flexDirection="row"
+                        child.style.marginBottom=child.style.marginRight
+                        child.style.marginRight=marginTop
                     }
                 }
+            } else {
+                this.lastSelected.style.flexDirection=this.formLayout.flexDirection.value
             }
             
         }
