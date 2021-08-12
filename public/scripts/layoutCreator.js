@@ -636,6 +636,7 @@ class LayoutCreator {
             return response.text()
         }).then((function(layoutID){
             if(layoutID) {
+                layoutID=parseInt(layoutID)
                 this.layoutContainer.dataset.layout=layoutID
                 this.saveButton.querySelector('img').remove()
                 this.saveButton.innerText="Salvataggio effettuato"
