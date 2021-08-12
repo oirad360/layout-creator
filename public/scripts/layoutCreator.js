@@ -214,7 +214,7 @@ class LayoutCreator {
 
     }
     
-    loadLayout(layoutID){
+    loadLayout(layoutID,modify){
         fetch(app_url+"/layout/loadLayout/"+layoutID).then(function (response){
             return response.json()
         }).then((function (json){
@@ -225,8 +225,10 @@ class LayoutCreator {
             }
             this.layoutContainer.dataset.layout=layoutID
             this.layoutContainer.classList.add("hasChilds")
+            this.layoutContainer.innerHTML=""
             let lastGen=json.childs[0].data_gen
             let color=this.getRandomColor()
+            let flag=false
             for(let child of json.childs){
                 const childNode=document.createElement('div')
                 childNode.classList.add('child')
@@ -246,16 +248,23 @@ class LayoutCreator {
                 }
                 if(child.hasChilds==1) {
                     childNode.classList.add("hasChilds")
-                } else {
-                    if(child.title) this.setChild(childNode,child.title,child.fontSize.split('px')[0])
-                    else {
-                        this.setChild(childNode,child.title,24)
-                        childNode.querySelector('.childTitle').remove()
+                } else if(child.title) this.setChild(childNode,child.title,child.fontSize.split('px')[0])
+                else if(modify===true) this.setChild(childNode,"",24)
+                else {
+                    this.setChild(childNode,"",24)
+                    childNode.querySelector('.childTitle').remove()
+                }
+                if(child.hasChilds!=1 && modify===true) {
+                    childNode.addEventListener('click',this.selectBinded)
+                    if(!flag){
+                        const click = new Event('click')
+                        childNode.dispatchEvent(click)
+                        flag=true
                     }
                 }
                 let parent
-                if(child.data_parent_gen===0 && child.data_parent_id===0) parent=layoutContainer
-                else parent=layoutContainer.querySelector("[data-gen=\'"+child.data_parent_gen+"\'][data-id=\'"+child.data_parent_id+"\']")
+                if(child.data_parent_gen===0 && child.data_parent_id===0) parent=this.layoutContainer
+                else parent=this.layoutContainer.querySelector("[data-gen=\'"+child.data_parent_gen+"\'][data-id=\'"+child.data_parent_id+"\']")
                 parent.appendChild(childNode)
                 this.counter.innerText++
                 this.gen=child.data_gen
@@ -264,6 +273,10 @@ class LayoutCreator {
     }
 
     modify(){
+        if(this.layoutContainer.dataset.layout==="new"){
+            this.quitButton.classList.add("hidden")
+        }
+        this.lastSelected=this.layoutContainer
         const childs=this.layoutContainer.querySelectorAll('.child')
         let flag=false
         for(const child of childs){
@@ -570,7 +583,7 @@ class LayoutCreator {
         const loading=document.createElement('img')
         loading.height=17
         loading.width=17
-        loading.src="../loading.gif"
+        loading.src="/provaTesi/public/loading.gif"
         this.saveButton.appendChild(loading)
         const data={
             "layout": {
@@ -634,9 +647,8 @@ class LayoutCreator {
         }).bind(this))
     }
 
-    quit(event){//termina le modifiche (senza salvare)
-        const layoutMenu=event.currentTarget.parentNode
-        layoutMenu.remove()
+    quit(){//termina le modifiche (senza salvare)
+        this.layoutMenu.remove()
         const childs=this.layoutContainer.querySelectorAll('.child')
         for(const child of childs){
             child.removeEventListener('click',this.selectBinded)
