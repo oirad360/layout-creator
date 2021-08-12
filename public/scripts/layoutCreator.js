@@ -215,9 +215,10 @@ class LayoutCreator {
     }
     
     loadLayout(layoutID,modify){
-        fetch(app_url+"/layout/loadLayout/"+layoutID).then(function (response){
+        fetch("/provaTesi/loadLayout.php?layoutID="+layoutID).then(function (response){
             return response.json()
         }).then((function (json){
+            console.log(json)
             for(let property of Object.keys(json)){
                 if(property!=="id" && property!=="user_id" && property!=="childs"){
                     this.layoutContainer.style[property]=json[property]
@@ -263,7 +264,7 @@ class LayoutCreator {
                     }
                 }
                 let parent
-                if(child.data_parent_gen===0 && child.data_parent_id===0) parent=this.layoutContainer
+                if(child.data_parent_gen==="0" && child.data_parent_id==="0") parent=this.layoutContainer
                 else parent=this.layoutContainer.querySelector("[data-gen=\'"+child.data_parent_gen+"\'][data-id=\'"+child.data_parent_id+"\']")
                 parent.appendChild(childNode)
                 this.counter.innerText++
@@ -586,13 +587,13 @@ class LayoutCreator {
         loading.src="/provaTesi/public/loading.gif"
         this.saveButton.appendChild(loading)
         const data={
-            "layout": {
+            //"layout": {
                 "id": this.layoutContainer.dataset.layout,
                 "display": this.layoutContainer.style.display,
                 "flexDirection": this.layoutContainer.style.flexDirection,
                 "height": this.layoutContainer.style.height,
-                "width": this.layoutContainer.style.width
-            },
+                "width": this.layoutContainer.style.width,
+            //},
             "childs": []
         }
         for(let i=1;i<=this.gen;i++){
@@ -635,6 +636,7 @@ class LayoutCreator {
         }).then(function(response){
             return response.text()
         }).then((function(layoutID){
+            console.log(layoutID)
             if(layoutID) {
                 layoutID=parseInt(layoutID)
                 this.layoutContainer.dataset.layout=layoutID

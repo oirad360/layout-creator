@@ -20,10 +20,12 @@ class HomeController extends BaseController
 
     public function fetchLayouts(){
         $users=User::all();
+        $result=array();
         foreach($users as $user){
-            $layouts=$user->layouts;
-            foreach($layouts as $layout){
-                $result[$user->username][]=$layout->id;
+            if($user->layouts){
+                foreach($user->layouts as $layout){
+                    $result[$user->username][]=$layout->id;
+                }
             }
         }
         return $result;

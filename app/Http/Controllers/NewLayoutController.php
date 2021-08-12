@@ -15,19 +15,19 @@ class NewLayoutController extends BaseController
         $layout;
         if(session('id')===null){
             return false;
-        } else if($request["layout"]["id"]==="new"){
+        } else if($request["id"]==="new"){
             $layout = new Layout;
             $layout->user_id=session('id');
         } else {
-            $layout=Layout::find($request["layout"]["id"]);
+            $layout=Layout::find($request["id"]);
             foreach($layout->childs as $child){
                 $child->delete();
             }
         }
-        $layout->display=$request["layout"]["display"];
-        $layout->flexDirection=$request["layout"]["flexDirection"];
-        $layout->height=$request["layout"]["height"];
-        $layout->width=$request["layout"]["width"];
+        $layout->display=$request["display"];
+        $layout->flexDirection=$request["flexDirection"];
+        $layout->height=$request["height"];
+        $layout->width=$request["width"];
         $layout->save();
         foreach($request["childs"] as $child){
             $newChild = new Child;
