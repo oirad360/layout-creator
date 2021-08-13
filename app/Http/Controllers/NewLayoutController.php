@@ -6,18 +6,21 @@ use Illuminate\Http\Request;
 class NewLayoutController extends BaseController
 {
     public function newLayout(){
+        if(session('id')===null)
         return view('newLayout')
-        ->with('app_folder',env('APP_FOLDER'))
+        ->with('app_folder', env('APP_FOLDER'))
+        ->with('csrf_token', csrf_token());
+        else
+        return view('newLayout')
+        ->with('logged', true)
+        ->with('app_folder', env('APP_FOLDER'))
         ->with('csrf_token', csrf_token());
     }
 
     public function saveLayout(Request $request){
         $layout;
-        if(session('id')===null){
-            return false;
-        } else if($request["id"]==="new"){
+        if($request["id"]==="new"){
             $layout = new Layout;
-            $layout->user_id=session('id');
         } else {
             $layout=Layout::find($request["id"]);
             foreach($layout->childs as $child){
@@ -49,5 +52,14 @@ class NewLayoutController extends BaseController
             $newChild->save();
         }
         return $layout->id;
+    }
+
+    public function saveUsersLayout($layoutID){
+        if(UsersLayout::find($layoutID)===null){
+            $usersLayout = new UsersLayout();
+            $usersLayout->user_id=session('id');
+            $usersLayout->layout_id=$layoutID;
+            $usersLayout->save();
+        }
     }
 }

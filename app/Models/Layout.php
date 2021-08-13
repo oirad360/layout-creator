@@ -6,8 +6,8 @@ class Layout extends Model
 {
     public $timestamps=false;
 
-    public function user(){
-        return $this->belongsTo("User");
+   public function user(){
+        return $this->hasOne("UsersLayout");
     }
 
     public function childs(){

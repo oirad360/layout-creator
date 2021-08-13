@@ -4671,6 +4671,7 @@ return array(
     'TijsVerkoyen\\CssToInlineStyles\\Css\\Rule\\Rule' => $vendorDir . '/tijsverkoyen/css-to-inline-styles/src/Css/Rule/Rule.php',
     'UnhandledMatchError' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/UnhandledMatchError.php',
     'User' => $baseDir . '/app/Models/User.php',
+    'UsersLayout' => $baseDir . '/app/Models/UsersLayout.php',
     'ValueError' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/ValueError.php',
     'Webmozart\\Assert\\Assert' => $vendorDir . '/webmozart/assert/src/Assert.php',
     'Webmozart\\Assert\\InvalidArgumentException' => $vendorDir . '/webmozart/assert/src/InvalidArgumentException.php',

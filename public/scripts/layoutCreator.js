@@ -1,5 +1,5 @@
 class LayoutCreator {
-    constructor(height,width){
+    constructor(saveButton,height,width){
         this.gen=0
 
         this.layoutMenu=document.createElement('div')
@@ -15,10 +15,9 @@ class LayoutCreator {
         this.deleteButton.id="deleteButton"
         this.deleteButton.innerText="Svuota sezione"
 
-        this.saveButton=document.createElement('button')
+        this.saveButton=saveButton
         this.saveButton.classList.add("hidden")
-        this.saveButton.id="saveButton"
-        this.saveButton.innerText="Salva"
+        this.saveButtonInnerText=saveButton.innerText
 
         this.addChildButton=document.createElement('button')
         this.addChildButton.classList.add("hidden")
@@ -32,6 +31,7 @@ class LayoutCreator {
 
         this.quitButton=document.createElement('button')
         this.quitButton.id="quitButton"
+        this.quitButton.classList.add("hidden")
         this.quitButton.innerText="Termina modifiche"
 
         this.layoutMenu.appendChild(this.saveButton)
@@ -210,15 +210,12 @@ class LayoutCreator {
         this.deleteChildsBinded=this.deleteChilds.bind(this)
         this.deleteButton.addEventListener('click',this.deleteChildsBinded)
 
-        this.saveBinded=this.save.bind(this)
-
     }
     
-    loadLayout(layoutID,modify){
-        fetch("/provaTesi/loadLayout.php?layoutID="+layoutID).then(function (response){
+    async loadLayout(layoutID,modify){
+        await fetch("/provaTesi/loadLayout.php?layoutID="+layoutID).then(function (response){
             return response.json()
         }).then((function (json){
-            console.log(json)
             for(let property of Object.keys(json)){
                 if(property!=="id" && property!=="user_id" && property!=="childs"){
                     this.layoutContainer.style[property]=json[property]
@@ -271,9 +268,11 @@ class LayoutCreator {
                 this.gen=child.data_gen
             }
         }).bind(this))
+        return true
     }
 
     modify(){
+        this.quitButton.classList.remove("hidden")
         if(this.layoutContainer.dataset.layout==="new"){
             this.quitButton.classList.add("hidden")
         }
@@ -298,8 +297,7 @@ class LayoutCreator {
 
     showSaveButton(){
         this.saveButton.classList.remove("hidden")
-        this.saveButton.innerText="Salva"
-        this.saveButton.addEventListener('click',this.saveBinded)
+        this.saveButton.innerText=this.saveButtonInnerText
     }
 
     getRandomColor() {
@@ -578,22 +576,13 @@ class LayoutCreator {
         this.splitCommands.classList.remove("hidden")
     }
     
-    save(){//salva il layout
-        this.saveButton.removeEventListener('click',this.saveBinded)
-        this.saveButton.innerText=""
-        const loading=document.createElement('img')
-        loading.height=17
-        loading.width=17
-        loading.src="/provaTesi/public/loading.gif"
-        this.saveButton.appendChild(loading)
+    async save(){//salva il layout
         const data={
-            //"layout": {
-                "id": this.layoutContainer.dataset.layout,
-                "display": this.layoutContainer.style.display,
-                "flexDirection": this.layoutContainer.style.flexDirection,
-                "height": this.layoutContainer.style.height,
-                "width": this.layoutContainer.style.width,
-            //},
+            "id": this.layoutContainer.dataset.layout,
+            "display": this.layoutContainer.style.display,
+            "flexDirection": this.layoutContainer.style.flexDirection,
+            "height": this.layoutContainer.style.height,
+            "width": this.layoutContainer.style.width,
             "childs": []
         }
         for(let i=1;i<=this.gen;i++){
@@ -609,10 +598,10 @@ class LayoutCreator {
                     else fontSize=null
                 }
                 data.childs.push({
-                    "gen": child.dataset.gen,
-                    "id": child.dataset.id,
-                    "parent_gen": child.dataset.parent_gen,
-                    "parent_id": child.dataset.parent_id,
+                    "data_gen": child.dataset.gen,
+                    "data_id": child.dataset.id,
+                    "data_parent_gen": child.dataset.parent_gen,
+                    "data_parent_id": child.dataset.parent_id,
                     "hasChilds": child.classList.contains("hasChilds"),
                     "title": title,
                     "fontSize": fontSize,
@@ -625,7 +614,7 @@ class LayoutCreator {
             }
         }
         
-        fetch(app_url+"/saveLayout",{
+        await fetch("/provaTesi/saveLayout.php",{
             method: 'POST',
             body: JSON.stringify(data),
             headers:
@@ -637,17 +626,10 @@ class LayoutCreator {
             return response.text()
         }).then((function(layoutID){
             console.log(layoutID)
-            if(layoutID) {
-                layoutID=parseInt(layoutID)
-                this.layoutContainer.dataset.layout=layoutID
-                this.saveButton.querySelector('img').remove()
-                this.saveButton.innerText="Salvataggio effettuato"
-            }
-            else {
-                this.saveButton.querySelector('img').remove()
-                this.saveButton.innerText="Effettua il login per salvere"
-            }
+            this.layoutContainer.dataset.layout=layoutID
         }).bind(this))
+
+        return parseInt(this.layoutContainer.dataset.layout)
     }
 
     quit(){//termina le modifiche (senza salvare)

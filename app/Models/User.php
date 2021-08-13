@@ -8,7 +8,7 @@ class User extends Model
     public $timestamps=false;
 
     public function layouts(){
-        return $this->hasMany("Layout");
+        return $this->hasMany("UsersLayout");
     }
 }
 

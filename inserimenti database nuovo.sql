@@ -15,14 +15,14 @@ height varchar(255),
 width varchar(255)
 )engine='InnoDB';
 
-create table usersLayouts(
-    layout_id integer primary key,
-    foreign key(layout_id) references layouts(id) on update cascade on delete cascade,
-    index ind_layout_id(layout_id),
-    user_id integer not null,
-    foreign key(user_id) references users(id) on update cascade on delete cascade,
-    index ind_user_id(user_id),
-    unique(user_id,layout_id)
+create table users_layouts(
+layout_id integer primary key,
+foreign key(layout_id) references layouts(id) on update cascade on delete cascade,
+index ind_layout_id(layout_id),
+user_id integer not null,
+foreign key(user_id) references users(id) on update cascade on delete cascade,
+index ind_user_id(user_id),
+unique(user_id,layout_id)
 )engine = 'InnoDB';
 
 create table childs(
@@ -45,5 +45,4 @@ margin varchar(255)
 )engine='InnoDB';
 
 insert into users(nome,cognome,username,email,password) values('Dario','Anzalone','oirad360','darioanzalone@live.it','dario123');
-insert into users(nome,cognome,username,email,password) values('Mario','Rossi','mario99','mariorossi@live.it','mario123');
-
+insert into users(nome,cognome,username,email,password) values('Test','User','testUser','testuser@live.it','test1234');

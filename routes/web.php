@@ -30,6 +30,7 @@ Route::get('home','HomeController@home');
 Route::get('home/fetchLayouts','HomeController@fetchLayouts');
 
 Route::get('newLayout','NewLayoutController@newLayout');
+Route::get('newLayout/saveUsersLayout/{layoutID}','NewLayoutController@saveUsersLayout');
 Route::post('saveLayout','NewLayoutController@saveLayout');
 
 Route::get('layout/loadLayout/{layoutID}', 'LayoutController@loadLayout');

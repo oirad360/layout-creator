@@ -24,7 +24,7 @@ class HomeController extends BaseController
         foreach($users as $user){
             if($user->layouts){
                 foreach($user->layouts as $layout){
-                    $result[$user->username][]=$layout->id;
+                    $result[$user->username][]=$layout->layout_id;
                 }
             }
         }
