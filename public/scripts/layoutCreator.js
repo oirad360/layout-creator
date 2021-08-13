@@ -212,8 +212,8 @@ class LayoutCreator {
 
     }
     
-    async loadLayout(layoutID,modify){
-        await fetch("/provaTesi/loadLayout.php?layoutID="+layoutID).then(function (response){
+    loadLayout(layoutID,modify){
+        fetch("/provaTesi/loadLayout.php?layoutID="+layoutID).then(function (response){
             return response.json()
         }).then((function (json){
             for(let property of Object.keys(json)){
@@ -268,7 +268,6 @@ class LayoutCreator {
                 this.gen=child.data_gen
             }
         }).bind(this))
-        return true
     }
 
     modify(){

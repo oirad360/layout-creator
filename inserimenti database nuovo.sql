@@ -43,6 +43,3 @@ height varchar(255),
 width varchar(255),
 margin varchar(255)
 )engine='InnoDB';
-
-insert into users(nome,cognome,username,email,password) values('Dario','Anzalone','oirad360','darioanzalone@live.it','dario123');
-insert into users(nome,cognome,username,email,password) values('Test','User','testUser','testuser@live.it','test1234');

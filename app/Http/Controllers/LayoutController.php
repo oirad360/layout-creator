@@ -24,9 +24,9 @@ class LayoutController extends BaseController
         }
     }
 
-    public function loadLayout($layoutID){
+    /* public function loadLayout($layoutID){
         $layout=Layout::find($layoutID);
         $childs=$layout->childs;
         return $layout;
-    }
+    } */
 }

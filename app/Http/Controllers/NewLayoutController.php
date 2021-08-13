@@ -17,7 +17,16 @@ class NewLayoutController extends BaseController
         ->with('csrf_token', csrf_token());
     }
 
-    public function saveLayout(Request $request){
+    public function saveUsersLayout($layoutID){
+        if(UsersLayout::find($layoutID)===null){
+            $usersLayout = new UsersLayout();
+            $usersLayout->user_id=session('id');
+            $usersLayout->layout_id=$layoutID;
+            $usersLayout->save();
+        }
+    }
+
+    /* public function saveLayout(Request $request){
         $layout;
         if($request["id"]==="new"){
             $layout = new Layout;
@@ -52,14 +61,5 @@ class NewLayoutController extends BaseController
             $newChild->save();
         }
         return $layout->id;
-    }
-
-    public function saveUsersLayout($layoutID){
-        if(UsersLayout::find($layoutID)===null){
-            $usersLayout = new UsersLayout();
-            $usersLayout->user_id=session('id');
-            $usersLayout->layout_id=$layoutID;
-            $usersLayout->save();
-        }
-    }
+    } */
 }
