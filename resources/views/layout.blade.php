@@ -40,6 +40,7 @@
         Layout: {{$layoutID}}
         @if(isset($modify))
         <button id=modifica>Modifica</button>
+        <button id=content>Content</button>
         @endif
     </body>
 </html>

@@ -26,6 +26,11 @@ class NewLayoutController extends BaseController
         }
     }
 
+    public function fetchProdotti(){
+        $prodotti=Product::all();
+        return $prodotti;
+    }
+
     /* public function saveLayout(Request $request){
         $layout;
         if($request["id"]==="new"){

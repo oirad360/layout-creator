@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 class LayoutController extends BaseController
 {
     public function layout($layoutID){
-        $user_id=Layout::find($layoutID)->user->user_id;
+        $user_id=UsersLayout::find($layoutID)->user_id;
         $username=User::find($user_id)->username;
         if(session('id')===null || $username!==User::find(session('id'))->username){
             return view('layout')

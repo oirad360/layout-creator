@@ -39,5 +39,10 @@
         @endif
     </head>
     <body>
+        <section id="layout">
+        </section>
+        <button id=content>Inserisci prodotto</button>
+        <section id="products">
+        </section>
     </body>
 </html>

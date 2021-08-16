@@ -26,5 +26,15 @@ foreach($request["childs"] as $child){
     '".$child["title"]."','".$child["fontSize"]."','".$child["display"]."','".$child["flexDirection"]."','".$child["height"]."','".$child["width"]."','".$child["margin"]."')";
     $res=mysqli_query($conn,$query);
 }
+
+$file=fopen("layout$layoutID.json","w");
+$data=array();
+foreach($request["childs"] as $child){
+    if($child["hasChilds"]==0)
+    $data["gen".$child["data_gen"]]["id".$child["data_id"]]=$child["content"];
+}
+fwrite($file,json_encode($data));
+fclose($file);
+mysqli_close($conn);
 echo $layoutID;
 ?>

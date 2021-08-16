@@ -1,7 +1,12 @@
-body{
+body,section[id="layout"]{
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    width: 99%;
+}
+section[id="products"]{
+    display: flex;
+    flex-wrap: wrap;
 }
 
 ::-webkit-scrollbar {
@@ -20,20 +25,20 @@ body{
 ::-webkit-scrollbar-thumb:hover {
     background: #555; 
 }
-/*
-#layoutContainer{
-    height: 600px;
-    width: 1100px;
-}
-*/
-.rect{
-    height: 220px;
-    width: 150px;
-    margin: 5px;
-    background-color: red;
-    flex-shrink: 0;
-}
 
+.prodotto img{
+    max-height: 150px;
+    max-width: 90px;
+    margin: 2px;
+}
+.prodotto h3{
+    margin:0px;
+}
+.prodotto{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 .hidden{
     display: none;
 }

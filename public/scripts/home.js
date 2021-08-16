@@ -23,5 +23,4 @@ function onJson(json){
     } else container.innerText="Nessun layout trovato."
 }
 
-
 fetch(app_url+"/home/fetchLayouts").then(onResponse).then(onJson)
