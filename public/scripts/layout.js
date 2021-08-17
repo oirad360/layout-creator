@@ -6,6 +6,7 @@ function modifica(){
     bottoneContent.classList.remove("hidden")
     sectionProdotti.classList.remove("hidden")
     bottoneRimuovi.classList.remove("hidden")
+    bottoneModifica.classList.add("hidden")
     modify=true
 }
 
@@ -16,6 +17,7 @@ function termina(){
     bottoneContent.classList.add("hidden")
     sectionProdotti.classList.add("hidden")
     bottoneRimuovi.classList.add("hidden")
+    bottoneModifica.classList.remove("hidden")
 }
 
 function salva(){

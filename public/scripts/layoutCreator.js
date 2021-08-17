@@ -355,8 +355,12 @@ class LayoutCreator {
                     flag=true
                 }
                 if(!child.querySelector('.childTitle')){
-                    child.innerHTML=""
-                    this.setChild(child,"",24)
+                    const title=document.createElement('h2')
+                    title.classList.add('childTitle')
+                    title.style.margin="10px"
+                    title.style.fontSize="24px"
+                    title.innerText=""
+                    child.insertBefore(title,child.querySelector('section'))
                 }
             }
         }
