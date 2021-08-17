@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel='stylesheet' href='/{{$app_folder}}/public/styles/newLayout.css'>
+        <link rel='stylesheet' href='/{{$app_folder}}/public/styles/layout.css'>
         <script src='/{{$app_folder}}/public/scripts/env.js' defer></script>
         <script src='/{{$app_folder}}/public/scripts/layoutCreator.js' defer></script>
         <script src='/{{$app_folder}}/public/scripts/newLayout.js' defer></script>
@@ -40,8 +40,9 @@
     </head>
     <body>
         <section id="layout">
+            <button id="remove">Rimuovi prodotti</button>
         </section>
-        <button id=content>Inserisci prodotto</button>
+        <button id=content>Inserisci prodotti</button>
         <section id="products">
         </section>
     </body>

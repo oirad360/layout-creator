@@ -31,6 +31,7 @@
                 display: none;
             }
         </style>
+        <link rel='stylesheet' href='/{{$app_folder}}/public/styles/layout.css'>
         <script src='/{{$app_folder}}/public/scripts/env.js' defer></script>
         <script src='/{{$app_folder}}/public/scripts/layoutCreator.js' defer></script>
         <script src='/{{$app_folder}}/public/scripts/layout.js' defer></script>
@@ -38,9 +39,15 @@
     <body>
         Autore: {{$username}} <br>
         Layout: {{$layoutID}}
-        @if(isset($modify))
-        <button id=modifica>Modifica</button>
-        <button id=content>Content</button>
-        @endif
+        <section id="layout">
+            @if(isset($modify))
+            <button id=modifica>Modifica</button>
+            @endif
+            <button class=hidden id=quit>Termina modifiche</button>
+            <button class=hidden id=remove>Rimuovi prodotti</button>
+        </section>
+        <button class=hidden id=content>Inserisci prodotti</button>
+        <section class=hidden id="products">
+        </section>
     </body>
 </html>

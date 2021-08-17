@@ -28,17 +28,25 @@ section[id="products"]{
 
 .prodotto img{
     max-height: 150px;
-    max-width: 90px;
+    max-width: 100px;
     margin: 2px;
 }
 .prodotto h3{
     margin:0px;
+    max-width: 110px;
 }
 .prodotto{
     display: flex;
     flex-direction: column;
     align-items: center;
+    background-color: rgba(85, 85, 85, 0.151);
+    border-radius: 10px;
+    padding:10px;
+    margin: 5px;
 }
 .hidden{
+    display: none;
+}
+#products.hidden{
     display: none;
 }

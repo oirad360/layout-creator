@@ -55,3 +55,6 @@ immagine varchar(255)
 
 insert into products(nome,prezzo,immagine) values('iPhone12',819,'https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/iphone-12-pro-family-hero?wid=940&hei=1112&fmt=jpeg&qlt=80&.v=1604021663000');
 insert into products(nome,prezzo,immagine) values('PlayStation 5',499,'https://fagaelectronics.it/1160-large_default/sony-playstation-5.jpg');
+insert into products(nome,prezzo,immagine) values('Xiaomi Mi Smart TV 4A 32"',210,'https://cdn.idealo.com/folder/Product/6864/3/6864373/s10_produktbild_gross/xiaomi-mi-smart-tv-4a-32.jpg');
+insert into products(nome,prezzo,immagine) values('Xbox Series X',499,'https://m.media-amazon.com/images/I/61CLCiCNtaL._AC_SX466_.jpg');
+insert into products(nome,prezzo,immagine) values('MSI GF63',1249,'https://m.media-amazon.com/images/I/719QyW89YDL._AC_SL1500_.jpg');

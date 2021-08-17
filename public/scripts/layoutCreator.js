@@ -31,17 +31,11 @@ class LayoutCreator {
         this.removeChildButton.id="removeChildButton"
         this.removeChildButton.innerText="Rimuovi sezione"
 
-        this.quitButton=document.createElement('button')
-        this.quitButton.id="quitButton"
-        this.quitButton.classList.add("hidden")
-        this.quitButton.innerText="Termina modifiche"
-
         this.layoutMenu.appendChild(this.saveButton)
         this.layoutMenu.appendChild(this.levelButton)
         this.layoutMenu.appendChild(this.deleteButton)
         this.layoutMenu.appendChild(this.addChildButton)
         this.layoutMenu.appendChild(this.removeChildButton)
-        this.layoutMenu.appendChild(this.quitButton)
 
         this.formLayout=document.createElement('form')
         this.formLayout.name="layout"
@@ -186,9 +180,6 @@ class LayoutCreator {
         this.removeChildBinded=this.removeChild.bind(this)
         this.removeChildButton.addEventListener('click',this.removeChildBinded)
 
-        this.quitBinded=this.quit.bind(this)
-        this.quitButton.addEventListener('click',this.quitBinded)
-
         this.titleUpdateBinded=this.titleUpdate.bind(this)
         this.formLayout.title.addEventListener('change', this.titleUpdateBinded)
 
@@ -213,15 +204,17 @@ class LayoutCreator {
 
     }
     
-    loadLayout(layoutID,modify){
-        fetch("/provaTesi/loadLayout.php?layoutID="+layoutID).then(function (response){
+    async loadLayout(layoutID,modify){
+        await fetch("/provaTesi/loadLayout.php?layoutID="+layoutID).then(function (response){
             return response.json()
         }).then((function (json){
             for(let property of Object.keys(json)){
-                if(property!=="id" && property!=="user_id" && property!=="childs"){
+                if(property!=="id" && property!=="user_id" && property!=="childs" && property!=="content"){
                     this.layoutContainer.style[property]=json[property]
                 }
             }
+            this.content=json["content"]
+            console.log(this.content)
             this.layoutContainer.dataset.layout=layoutID
             this.layoutContainer.classList.add("hasChilds")
             this.layoutContainer.innerHTML=""
@@ -269,12 +262,7 @@ class LayoutCreator {
                 this.gen=child.data_gen
             }
         }).bind(this))
-        fetch("/provaTesi/layout"+layoutID+".json").then(function(response){
-            return response.json()
-        }).then((function(json){
-            this.content=json
-            console.log(this.content)
-        }).bind(this))
+        return this.content
     }
 
     async save(){//salva il layout
@@ -300,10 +288,10 @@ class LayoutCreator {
                 }
                 let content
                 if(!child.classList.contains("hasChilds")){
-                    if(!this.content["gen"+child.dataset.gen]["id"+child.dataset.id]){
+                    if(!this.content["[data-gen=\'"+child.dataset.gen+"\']"]["[data-id=\'"+child.dataset.id+"\']"]){
                         content=[]
                     } else {
-                        content=this.content["gen"+child.dataset.gen]["id"+child.dataset.id]
+                        content=this.content["[data-gen=\'"+child.dataset.gen+"\']"]["[data-id=\'"+child.dataset.id+"\']"]
                     }
                 }
                 data.childs.push({
@@ -355,10 +343,6 @@ class LayoutCreator {
     }
 
     modify(){
-        this.quitButton.classList.remove("hidden")
-        if(this.layoutContainer.dataset.layout==="new"){
-            this.quitButton.classList.add("hidden")
-        }
         this.lastSelected=this.layoutContainer
         const childs=this.layoutContainer.querySelectorAll('.child')
         let flag=false
@@ -381,14 +365,47 @@ class LayoutCreator {
     addContent(sectionContent,gen,id){
         if(gen && id){
             const child=this.layoutContainer.querySelector(".child[data-gen=\'"+gen+"\'][data-id=\'"+id+"\']")
-            if(child && child!==this.layoutContainer) this.content["gen"+gen]["id"+id].push(sectionContent)
+            if(child && child!==this.layoutContainer) {
+                this.showSaveButton()
+                this.content["[data-gen=\'"+gen+"\']"]["[data-id=\'"+id+"\']"].push(sectionContent)
+            }
             else console.log("scegli una sezione")
         } else if(this.lastSelected!==this.layoutContainer){
-            this.content["gen"+this.lastSelected.dataset.gen]["id"+this.lastSelected.dataset.id].push(sectionContent)
+            this.showSaveButton()
+            this.content["[data-gen=\'"+this.lastSelected.dataset.gen+"\']"]["[data-id=\'"+this.lastSelected.dataset.id+"\']"].push(sectionContent)
         } else {
             console.log("scegli una sezione")
         }
         console.log(this.content)
+    }
+
+    removeContent(index,gen,id){
+        if(gen && id){
+            const child=this.layoutContainer.querySelector(".child[data-gen=\'"+gen+"\'][data-id=\'"+id+"\']")
+            if(child && child!==this.layoutContainer) {
+                this.showSaveButton()
+                this.content["[data-gen=\'"+gen+"\']"]["[data-id=\'"+id+"\']"].splice(index,1)
+            }
+            else console.log("scegli una sezione")
+        } else if(this.lastSelected!==this.layoutContainer){
+            this.showSaveButton()
+            this.content["[data-gen=\'"+this.lastSelected.dataset.gen+"\']"]["[data-id=\'"+this.lastSelected.dataset.id+"\']"].splice(index,1)
+        } else {
+            console.log("scegli una sezione")
+        }
+        console.log(this.content)
+    }
+
+    getContent(gen,id){
+        if(gen && id){
+            const child=this.layoutContainer.querySelector(".child[data-gen=\'"+gen+"\'][data-id=\'"+id+"\']")
+            if(child && child!==this.layoutContainer) {
+                return this.content["[data-gen=\'"+gen+"\']"]["[data-id=\'"+id+"\']"]
+            }
+            else console.log("scegli una sezione")
+        } else if(this.lastSelected!==this.layoutContainer){
+            return this.content["[data-gen=\'"+this.lastSelected.dataset.gen+"\']"]["[data-id=\'"+this.lastSelected.dataset.id+"\']"]
+        } else console.log("scegli una sezione")
     }
 
     showSaveButton(){
@@ -482,8 +499,8 @@ class LayoutCreator {
         event.preventDefault()
         this.showSaveButton()
         this.gen++
-        this.content["gen"+this.gen]=[]
-        if(this.lastSelected.dataset.gen!=0)delete this.content["gen"+this.lastSelected.dataset.gen]["id"+this.lastSelected.dataset.id]
+        this.content["[data-gen=\'"+this.gen+"\']"]=[]
+        if(this.lastSelected.dataset.gen!=0)delete this.content["[data-gen=\'"+this.lastSelected.dataset.gen+"\']"]["[data-id=\'"+this.lastSelected.dataset.id+"\']"]
         this.lastSelected.innerHTML="" //lastSelected è il div "padre" che è stato selezionato per essere suddiviso
         this.lastSelected.classList.add("hasChilds")
         this.lastSelected.removeEventListener('click',this.selectBinded)
@@ -515,7 +532,7 @@ class LayoutCreator {
             child.addEventListener('click',this.selectBinded) //lo rendo selezionabile
             this.lastSelected.appendChild(child) //lo inserisco nel padre
             this.counter.innerText++
-            this.content["gen"+this.gen]["id"+i]=[]
+            this.content["[data-gen=\'"+this.gen+"\']"]["[data-id=\'"+i+"\']"]=[]
         }
         const click= new Event('click') //adesso seleziono il primo figlio, come se, dopo aver generato tutti i figli, facessi click sul primo
         this.lastSelected.querySelector('.child[data-id=\'1\']').dispatchEvent(click)//dunque dopo questa istruzione lastSelected diventerà il primo figlio che è stato generato dentro il padre (l'ex lastSelected, vedi il funzionamento di select())
@@ -633,7 +650,7 @@ class LayoutCreator {
         this.setChild(child,"Inserisci un titolo",24)//imposto il titolo e la section nel figlio appena creato
         child.addEventListener('click',this.selectBinded) //lo rendo selezionabile
         this.lastSelected.appendChild(child) //lo inserisco nel padre
-        this.content["gen"+child.dataset.gen]["id"+child.dataset.id]=[]
+        this.content["[data-gen=\'"+child.dataset.gen+"\']"]["[data-id=\'"+child.dataset.id+"\']"]=[]
         this.counter.innerText++
         console.log(this.content)
     }
@@ -643,7 +660,7 @@ class LayoutCreator {
         const parent=this.lastSelected.parentNode
         const length=this.lastSelected.querySelectorAll('.child').length+1
         this.lastSelected.remove()
-        delete this.content["gen"+this.lastSelected.dataset.gen]["id"+this.lastSelected.dataset.id]
+        delete this.content["[data-gen=\'"+this.lastSelected.dataset.gen+"\']"]["[data-id=\'"+this.lastSelected.dataset.id+"\']"]
         this.counter.innerText-=length
         const click=new Event('click')
         parent.querySelector('.child').dispatchEvent(click)
@@ -656,12 +673,12 @@ class LayoutCreator {
         this.addChildButton.classList.add("hidden")
         this.removeChildButton.classList.add("hidden")
         for(let child of childs){
-            delete this.content["gen"+child.dataset.gen]
+            delete this.content["[data-gen=\'"+child.dataset.gen+"\']"]
             child.remove()
             this.counter.innerText--
         }
-        if(!this.content["gen"+this.lastSelected.dataset.gen] && this.lastSelected!==this.layoutContainer) this.content["gen"+this.lastSelected.dataset.gen]=[]
-        if(this.lastSelected!==this.layoutContainer)this.content["gen"+this.lastSelected.dataset.gen]["id"+this.lastSelected.dataset.id]=[]
+        if(!this.content["[data-gen=\'"+this.lastSelected.dataset.gen+"\']"] && this.lastSelected!==this.layoutContainer) this.content["[data-gen=\'"+this.lastSelected.dataset.gen+"\']"]=[]
+        if(this.lastSelected!==this.layoutContainer)this.content["[data-gen=\'"+this.lastSelected.dataset.gen+"\']"]["[data-id=\'"+this.lastSelected.dataset.id+"\']"]=[]
         this.lastSelected.classList.remove("hasChilds")
         if(this.counter.innerText==0){
             this.saveButton.classList.add("hidden")
