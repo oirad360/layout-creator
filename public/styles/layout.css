@@ -26,6 +26,13 @@ section[id="products"]{
     background: #555; 
 }
 
+.child section{
+    overflow: auto;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
 .prodotto img{
     max-height: 150px;
     max-width: 100px;

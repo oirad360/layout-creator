@@ -1,6 +1,6 @@
 function salva(){
     if(document.querySelector('meta[name=logged][content=true]')){
-        if(!layoutCreator.saved){
+        if(!layoutCreator.isSaved()){
             bottoneSalva.removeEventListener('click',salva)
             bottoneSalva.innerText=""
             const loading=document.createElement('img')
@@ -22,9 +22,11 @@ function salva(){
         bottoneSalva.innerText="Effettua l'accesso per salvare"
     }
 }
+
 function onResponse(response){
     return response.json()
 }
+
 function onJson(json){
     for(const item of json){
         const prodotto=document.createElement('div')
@@ -44,7 +46,6 @@ function onJson(json){
     }
 }
 
-
 function addContent(){
     if(productsToInsert.length>0){
         for(const product of productsToInsert){
@@ -63,7 +64,7 @@ function addContent(){
             prodotto.appendChild(immagine)
             prodotto.appendChild(prezzo)
             prodotto.addEventListener('click',select)
-            layoutCreator.lastSelected.querySelector('section').appendChild(prodotto)
+            layoutCreator.getLastSelected().querySelector('section').appendChild(prodotto)
         }
     } else {
         console.log("scegli un prodotto")
@@ -109,7 +110,6 @@ function select(event){
         else productsToRemove=list
 }
 
-
 const bottoneContent=document.querySelector('#content')
 const bottoneSalva = document.createElement('button')
 const bottoneRimuovi=document.querySelector('#remove')
@@ -117,8 +117,8 @@ bottoneSalva.innerText="Salva"
 const layoutCreator = new LayoutCreator(bottoneSalva,"600px","100%")
 const sectionLayout=document.querySelector('#layout')
 const sectionProdotti=document.querySelector('#products')
-sectionLayout.insertBefore(layoutCreator.layoutMenu,bottoneRimuovi)
-sectionLayout.appendChild(layoutCreator.layoutContainer)
+sectionLayout.insertBefore(layoutCreator.getLayoutMenu(),bottoneRimuovi)
+sectionLayout.appendChild(layoutCreator.getLayoutContainer())
 bottoneSalva.addEventListener('click',salva)
 bottoneContent.addEventListener('click',addContent)
 bottoneRimuovi.addEventListener('click',removeContent)

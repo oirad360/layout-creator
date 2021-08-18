@@ -1,6 +1,6 @@
 function modifica(){
     layoutCreator.modify()
-    sectionLayout.insertBefore(layoutCreator.layoutMenu,bottoneRimuovi)
+    sectionLayout.insertBefore(layoutCreator.getLayoutMenu(),bottoneRimuovi)
     bottoneSalva.addEventListener('click',salva)
     bottoneTermina.classList.remove('hidden')
     bottoneContent.classList.remove("hidden")
@@ -21,7 +21,7 @@ function termina(){
 }
 
 function salva(){
-    if(!layoutCreator.saved){
+    if(!layoutCreator.isSaved()){
         bottoneSalva.removeEventListener('click',salva)
         bottoneSalva.innerText=""
         const loading=document.createElement('img')
@@ -40,6 +40,7 @@ function salva(){
 function onResponse(response){
     return response.json()
 }
+
 function onJsonProdotti(prodotti){
     for(const item of prodotti){
         const prodotto=document.createElement('div')
@@ -78,7 +79,7 @@ function addContent(){
             prodotto.appendChild(immagine)
             prodotto.appendChild(prezzo)
             prodotto.addEventListener('click',select)
-            layoutCreator.lastSelected.querySelector('section').appendChild(prodotto)
+            layoutCreator.getLastSelected().querySelector('section').appendChild(prodotto)
         }
     } else {
         console.log("scegli un prodotto")
@@ -107,7 +108,7 @@ function removeContent(){
 function onJsonLayout(json){
     for(const gen of Object.keys(json)){
         for(const id of Object.keys(json[gen])){
-            const childSection=layoutCreator.layoutContainer.querySelector('.child'+gen+id).querySelector('section')
+            const childSection=layoutCreator.getLayoutContainer().querySelector('.child'+gen+id).querySelector('section')
             for(const productID of json[gen][id]){
                 const product=sectionProdotti.querySelector(".prodotto[data-product_id=\'"+productID+"\']")
                 const cloneProduct=document.createElement('div')
@@ -151,7 +152,6 @@ function select(event){
     }
 }
 
-
 const bottoneSalva=document.createElement('button')
 bottoneSalva.innerText="Salva"
 const layoutCreator=new LayoutCreator(bottoneSalva)
@@ -163,7 +163,7 @@ const bottoneContent=document.querySelector('#content')
 const layoutID=document.querySelector('meta[name=layout]').content
 const sectionLayout=document.querySelector('#layout')
 const sectionProdotti=document.querySelector('#products')
-sectionLayout.appendChild(layoutCreator.layoutContainer)
+sectionLayout.appendChild(layoutCreator.getLayoutContainer())
 bottoneContent.addEventListener('click',addContent)
 bottoneTermina.addEventListener('click',termina)
 bottoneRimuovi.addEventListener('click',removeContent)
