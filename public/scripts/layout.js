@@ -151,18 +151,19 @@ function select(event){
     }
 }
 
+
+const bottoneSalva=document.createElement('button')
+bottoneSalva.innerText="Salva"
+const layoutCreator=new LayoutCreator(bottoneSalva)
+const bottoneModifica=document.querySelector('#modifica')
+if(bottoneModifica)bottoneModifica.addEventListener('click',modifica)
 const bottoneRimuovi=document.querySelector('#remove')
 const bottoneTermina=document.querySelector('#quit')
 const bottoneContent=document.querySelector('#content')
 const layoutID=document.querySelector('meta[name=layout]').content
-const bottoneSalva=document.createElement('button')
-bottoneSalva.innerText="Salva"
-const layoutCreator=new LayoutCreator(bottoneSalva)
 const sectionLayout=document.querySelector('#layout')
 const sectionProdotti=document.querySelector('#products')
 sectionLayout.appendChild(layoutCreator.layoutContainer)
-const bottoneModifica=document.querySelector('#modifica')
-if(bottoneModifica)bottoneModifica.addEventListener('click',modifica)
 bottoneContent.addEventListener('click',addContent)
 bottoneTermina.addEventListener('click',termina)
 bottoneRimuovi.addEventListener('click',removeContent)

@@ -311,6 +311,7 @@ class LayoutCreator {
                 })
             }
         }
+        console.log(data)
         console.log(this.content)
         await fetch("/provaTesi/saveLayout.php",{
             method: 'POST',
