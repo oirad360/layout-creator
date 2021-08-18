@@ -234,7 +234,7 @@ class LayoutCreator {
     }
     
     async loadLayout(layoutID,modify){//carica il layout per mostrarlo e ritorna il json per i contenuti
-        await fetch("/provaTesi/loadLayout.php?layoutID="+layoutID).then(function (response){
+        await fetch("/layoutCreator/loadLayout.php?layoutID="+layoutID).then(function (response){
             return response.json()
         }).then((function (json){
             for(let property of Object.keys(json)){
@@ -341,7 +341,7 @@ class LayoutCreator {
             }
         }
         console.log(this.#content)
-        await fetch("/provaTesi/saveLayout.php",{
+        await fetch("/layoutCreator/saveLayout.php",{
             method: 'POST',
             body: JSON.stringify(data),
             headers:

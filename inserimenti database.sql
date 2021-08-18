@@ -1,4 +1,7 @@
-/***********************************DB LAYOUTS**************************************/
+create database layoutCreator;
+use layoutCreator;
+
+/***********************************SEZIONE LAYOUTS**************************************/
 create table layouts(
 id integer primary key auto_increment,
 display varchar(255),
@@ -26,7 +29,7 @@ width varchar(255),
 margin varchar(255)
 )engine='InnoDB';
 
-/*******************************DB SITO GENERICO************************************/
+/*******************************SEZIONE GENERICA************************************/
 create table users(
 id integer primary key auto_increment,
 nome varchar(255) not null,

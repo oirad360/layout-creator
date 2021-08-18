@@ -1,1 +1,1 @@
-let app_url="/provaTesi/public"
+let app_url="/layoutCreator/public"

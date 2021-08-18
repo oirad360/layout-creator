@@ -27,7 +27,7 @@ function salva(){
         const loading=document.createElement('img')
         loading.height=17
         loading.width=17
-        loading.src="/provaTesi/public/loading.gif"
+        loading.src="/layoutCreator/public/loading.gif"
         bottoneSalva.appendChild(loading)
         layoutCreator.save().then(function(){
             bottoneSalva.querySelector('img').remove()
