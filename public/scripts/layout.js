@@ -1,7 +1,7 @@
 function modifica(){
     layoutCreator.modify()
     sectionLayout.insertBefore(layoutCreator.getLayoutMenu(),bottoneRimuovi)
-    bottoneSalva.addEventListener('click',salva)
+    
     bottoneTermina.classList.remove('hidden')
     bottoneContent.classList.remove("hidden")
     sectionProdotti.classList.remove("hidden")
@@ -164,6 +164,7 @@ const layoutID=document.querySelector('meta[name=layout]').content
 const sectionLayout=document.querySelector('#layout')
 const sectionProdotti=document.querySelector('#products')
 sectionLayout.appendChild(layoutCreator.getLayoutContainer())
+bottoneSalva.addEventListener('click',salva)
 bottoneContent.addEventListener('click',addContent)
 bottoneTermina.addEventListener('click',termina)
 bottoneRimuovi.addEventListener('click',removeContent)
