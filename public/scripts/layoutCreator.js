@@ -453,6 +453,10 @@ class LayoutCreator {
         return this.#layoutContainer
     }
 
+    getLayoutID(){
+        return this.#layoutContainer.dataset.layout
+    }
+
     isSaved(){//ritorna vero se il layout è salvato, falso altrimenti (ovvero quando sono apportate modifiche dopo l'ultimo salvataggio)
         return this.#saved
     }
