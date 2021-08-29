@@ -12,6 +12,7 @@ function modifica(){
 
 function termina(){
     layoutCreator.quit()
+    layoutCreator.getLayoutMenu().remove()
     modify=false
     bottoneTermina.classList.add('hidden')
     bottoneContent.classList.add("hidden")
