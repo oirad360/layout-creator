@@ -396,6 +396,11 @@ class LayoutCreator {
         }
     }
 
+    async deleteLayout(layoutID){
+        if(layoutID) await fetch('/layoutCreator/deleteLayout.php?layoutID='+layoutID)
+        else await fetch('/layoutCreator/deleteLayout.php?layoutID='+this.#layoutContainer.dataset.layout)
+    }
+
     addContent(sectionContent,gen,id){//aggiunge un nuovo oggetto (sectionContent) nella lista dei contenuti del child scelto
         if(gen && id){
             const child=this.#layoutContainer.querySelector(".child[data-gen=\'"+gen+"\'][data-id=\'"+id+"\']")
